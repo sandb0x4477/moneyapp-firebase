@@ -1,0 +1,7 @@
+{
+  "name": "moneyapp-fb",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}
