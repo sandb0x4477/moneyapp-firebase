@@ -1,6 +1,6 @@
 {
-  "appId": "io.ionic.starter",
-  "appName": "moneyapp-fb",
+  "appId": "com.alittlebitofcode.moneyapp",
+  "appName": "ew-moneyapp",
   "bundledWebRuntime": false,
   "npmClient": "npm",
   "webDir": "www",

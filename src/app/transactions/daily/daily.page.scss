@@ -1,0 +1,27 @@
+.inc-exp-total {
+  display: grid;
+  grid-template-columns: repeat(3, auto);
+  justify-items: center;
+  margin: 12px 6px 6px 6px;
+  padding-bottom: 4px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.inc-exp-total-column {
+  // font-size: 0.85em;
+  align-self: center;
+}
+
+.inc-exp-total-column-text {
+  font-size: 0.85em;
+  text-align: center;
+}
+
+.inc-exp-total-column-number {
+  font-size: 0.7em;
+  text-align: center;
+}
+
+.dummy {
+  min-height: 70px;
+}

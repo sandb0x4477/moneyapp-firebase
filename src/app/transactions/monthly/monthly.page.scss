@@ -1,0 +1,48 @@
+.inc-exp-total {
+  display: grid;
+  grid-template-columns: repeat(3, auto);
+  justify-items: center;
+  margin: 12px 6px 6px 6px;
+  padding-bottom: 4px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.inc-exp-total-column {
+  // font-size: 0.85em;
+  align-self: center;
+}
+
+.inc-exp-total-column-text {
+  font-size: 0.85em;
+  text-align: center;
+}
+
+.inc-exp-total-column-number {
+  font-size: 0.7em;
+  text-align: center;
+}
+
+.container {
+  display: grid;
+  grid-template-columns: 3fr 1fr 1fr;
+  grid-gap: 12px;
+  padding: 8px;
+  font-size: 0.9em;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.month {
+  padding-left: 6px;
+}
+
+.income {
+  padding-right: 6px;
+  color: var(--income-color);
+  justify-self: end;
+}
+
+.expense {
+  padding-right: 6px;
+  color: var(--expense-color);
+  justify-self: end;
+}

@@ -1,0 +1,32 @@
+<!-- ! CARD -->
+  <ion-card>
+    <div class="card-header">
+      <div>{{ day.header.dayOfTheMonth }}</div>
+      <div [class.isSunday]="day.header.weekDay === 'Sunday'">{{ day.header.weekDay }}</div>
+      <div>{{ day.header.monthYear }}</div>
+      <div>{{ day.header.income | number: '1.2-2' }}</div>
+      <div>{{ day.header.expense | number: '1.2-2' }}</div>
+    </div>
+
+    <ng-container *ngFor="let trans of day.result">
+      <div class="card-transaction" (click)="onTransClick(trans)">
+        <div>
+          <p>
+            {{ trans.catName}}
+          </p>
+          <p>
+            {{ trans?.subCatName}}
+          </p>
+        </div>
+        <div>
+          <p>
+            {{ trans.memo }}
+          </p>
+          <p>
+            {{ trans.accName}}
+          </p>
+        </div>
+        <div [class.isIncome]="trans.type === 0">{{ trans.amount | number: '1.2-2' }}</div>
+      </div>
+    </ng-container>
+  </ion-card>

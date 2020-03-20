@@ -30,3 +30,9 @@ npm-debug.log*
 /plugins
 /www
 /src/environments
+src/assets/account.json
+src/assets/category.json
+src/assets/subcategory.json
+src/assets/transaction.json
+src/assets/totals.json
+src/assets/fonts
