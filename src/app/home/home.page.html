@@ -12,8 +12,11 @@
   <ion-button (click)="importAccount()">importAccount</ion-button>
   <ion-button (click)="importTransaction()">importTransaction</ion-button>
   <ion-button (click)="importTotals()">import Totals</ion-button>
+  <ion-button (click)="replaceAccounts()">replaceAccounts</ion-button>
+  <ion-button (click)="replaceCategories()">replaceCategories</ion-button>
+  <ion-button (click)="replaceCatsOrder()">replace Cats Order</ion-button>
   <br>
   <pre>
-    {{transactionFromFb| json}}
+    {{catorderFromFb | json}}
   </pre>
 </ion-content>

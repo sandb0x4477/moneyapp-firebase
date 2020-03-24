@@ -1,0 +1,31 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="end">
+      <ion-button (click)="dismissModal()">
+        <ion-icon name="close" color="light"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>
+      {{ title }}
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="outer-content ion-padding">
+  <ion-item>
+    <ion-label position="floating">Name *</ion-label>
+    <ion-input [(ngModel)]="name" type="text" required></ion-input>
+  </ion-item>
+
+  <br />
+
+  <ion-button
+    type="submit"
+    color="secondary"
+    expand="block"
+    (click)="onSubmit()"
+    [disabled]="submitDisabled()"
+    >Submit</ion-button
+  >
+  <ion-button color="medium" expand="block" (click)="dismissModal()">Cancel</ion-button>
+</ion-content>

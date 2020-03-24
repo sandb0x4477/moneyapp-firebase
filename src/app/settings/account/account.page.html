@@ -1,0 +1,28 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+    <ion-title>Accounts</ion-title>
+    <ion-buttons slot="primary">
+      <ion-button (click)="addNewInModal()">
+        <ion-icon slot="icon-only" name="add"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-list>
+
+    <ng-container *ngFor="let item of accounts">
+    <ion-item lines="full">
+      <ion-icon slot="start" name="pencil" (click)="editInModal(item)"></ion-icon>
+      <ion-label>
+        {{item.accName}}
+      </ion-label>
+    </ion-item>
+    </ng-container>
+
+  </ion-list>
+</ion-content>

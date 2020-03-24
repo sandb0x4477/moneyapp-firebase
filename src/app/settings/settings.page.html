@@ -1,9 +1,19 @@
 <ion-header>
-  <ion-toolbar>
-    <ion-title>settings</ion-title>
+  <ion-toolbar color="primary">
+    <ion-title>Settings</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
-
+  <ion-list>
+    <ion-item detail lines="full" button routerLink="/app/settings/account" routerDirection="forward">
+      Accounts
+    </ion-item>
+    <ion-item detail lines="full" button routerLink="/app/settings/category" routerDirection="forward">
+      Categories
+    </ion-item>
+<!--     <ion-item detail lines="full" button routerLink="/app/settings/repeat-trans" routerDirection="forward">
+      Repeat Transactions
+    </ion-item> -->
+  </ion-list>
 </ion-content>

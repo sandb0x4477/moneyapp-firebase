@@ -1,9 +1,22 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-title>stats</ion-title>
-  </ion-toolbar>
-</ion-header>
-
 <ion-content>
+  <ion-button (click)="prevoiusDate()">Prev date</ion-button>
+  <ion-button (click)="nextDate()">Next date</ion-button>
+  <br>
+
+  <ion-card>
+    <ion-card-content>
+      <div id="container"></div>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-list>
+    <ng-container *ngFor="let item of statData; let i = index">
+      <ion-item detail lines="full" button (click)="goToStatsDetail(item)">
+        <ion-badge slot="start" [style.backgroundColor]="chartColors[i]">{{item.percent}} %</ion-badge>
+        <ion-label class="ion-text-left">{{item.catName}}</ion-label>
+        <ion-label class="ion-text-right label-total">{{item.sum | number: '1.2-2'}}</ion-label>
+      </ion-item>
+    </ng-container>
+  </ion-list>
 
 </ion-content>

@@ -1,0 +1,55 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+    <ion-title>Main Categories</ion-title>
+    <ion-buttons slot="primary">
+      <ion-button (click)="addNewInModal()">
+        <ion-icon slot="icon-only" name="add"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-list>
+    <ion-item-divider>
+      <ion-label>
+        Expense
+      </ion-label>
+    </ion-item-divider>
+
+    <!-- ! EXPENSE -->
+    <ion-reorder-group (ionItemReorder)="doReorder($event, 'expenseCats')" disabled="false">
+      <ng-container *ngFor="let item of expenseCats; let i=index">
+        <ion-item detail lines="full" button>
+          <ion-icon slot="start" name="pencil" (click)="editInModal(item)"></ion-icon>
+          <ion-label>
+            {{item.catName}}
+          </ion-label>
+          <ion-reorder slot="end"></ion-reorder>
+        </ion-item>
+      </ng-container>
+    </ion-reorder-group>
+
+    <ion-item-divider>
+      <ion-label>
+        Income
+      </ion-label>
+    </ion-item-divider>
+
+    <!-- ! INCOME -->
+    <ion-reorder-group (ionItemReorder)="doReorder($event, 'incomeCats')" disabled="false">
+      <ng-container *ngFor="let item of incomeCats; let i=index">
+        <ion-item detail lines="full" button>
+          <ion-icon slot="start" name="pencil" (click)="editInModal(item)"></ion-icon>
+          <ion-label>
+            {{item.catName}}
+          </ion-label>
+          <ion-reorder slot="end"></ion-reorder>
+        </ion-item>
+      </ng-container>
+    </ion-reorder-group>
+  </ion-list>
+</ion-content>

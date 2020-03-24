@@ -30,6 +30,216 @@ interface Account {
   is_deleted: boolean;
   order_seq: number;
 }
+const ACCOUNTS = [
+  {
+    accountName: 'Cash',
+    fbId: '-M2elScw9NSp8sxomCS6',
+    id: 1,
+    isDeleted: false,
+    orderSeq: 1,
+  },
+  {
+    accountName: 'CommBank',
+    fbId: '-M2elSctDcg2EfxVb4FQ',
+    id: 5,
+    isDeleted: false,
+    orderSeq: 2,
+  },
+  {
+    accountName: 'Visa CC',
+    fbId: '-M2elScv2kNQGvn3YU7p',
+    id: 6,
+    isDeleted: false,
+    orderSeq: 3,
+  },
+];
+
+const CATEGORIES = [
+  {
+    categoryName: 'Food',
+    fbId: '-M2eltVFR8T426T5Egmh',
+    id: 6,
+    isDeleted: false,
+    orderSeq: 101,
+    transType: 1,
+  },
+  {
+    categoryName: 'Household',
+    fbId: '-M2eltVIlgOa5J6_2TOb',
+    id: 11,
+    isDeleted: false,
+    orderSeq: 102,
+    transType: 1,
+  },
+  {
+    categoryName: 'Bills',
+    fbId: '-M2eltVIlgOa5J6_2TOc',
+    id: 68,
+    isDeleted: false,
+    orderSeq: 103,
+    transType: 1,
+  },
+  {
+    categoryName: 'Culture',
+    fbId: '-M2eltVIlgOa5J6_2TOd',
+    id: 10,
+    isDeleted: false,
+    orderSeq: 104,
+    transType: 1,
+  },
+  {
+    categoryName: 'Car',
+    fbId: '-M2eltVJq5ftBKdh2_co',
+    id: 56,
+    isDeleted: false,
+    orderSeq: 105,
+    transType: 1,
+  },
+  {
+    categoryName: 'Beauty',
+    fbId: '-M2eltVJq5ftBKdh2_cp',
+    id: 13,
+    isDeleted: false,
+    orderSeq: 106,
+    transType: 1,
+  },
+  {
+    categoryName: 'Clothes',
+    fbId: '-M2eltVJq5ftBKdh2_cq',
+    id: 12,
+    isDeleted: false,
+    orderSeq: 107,
+    transType: 1,
+  },
+  {
+    categoryName: 'Transportation',
+    fbId: '-M2eltVJq5ftBKdh2_cr',
+    id: 9,
+    isDeleted: false,
+    orderSeq: 108,
+    transType: 1,
+  },
+  {
+    categoryName: 'Health',
+    fbId: '-M2eltVK_LQzgiI63skZ',
+    id: 14,
+    isDeleted: false,
+    orderSeq: 109,
+    transType: 1,
+  },
+  {
+    categoryName: 'Gift',
+    fbId: '-M2eltVK_LQzgiI63sk_',
+    id: 16,
+    isDeleted: false,
+    orderSeq: 110,
+    transType: 1,
+  },
+  {
+    categoryName: 'Computer',
+    fbId: '-M2eltVK_LQzgiI63ska',
+    id: 15,
+    isDeleted: false,
+    orderSeq: 111,
+    transType: 1,
+  },
+  {
+    categoryName: 'Alcohol',
+    fbId: '-M2eltVK_LQzgiI63skb',
+    id: 55,
+    isDeleted: false,
+    orderSeq: 112,
+    transType: 1,
+  },
+  {
+    categoryName: 'Lucy Lu',
+    fbId: '-M2eltVLXx4qKiNh5U5v',
+    id: 101,
+    isDeleted: false,
+    orderSeq: 113,
+    transType: 1,
+  },
+  {
+    categoryName: 'Travel',
+    fbId: '-M2eltVLXx4qKiNh5U5w',
+    id: 17,
+    isDeleted: false,
+    orderSeq: 114,
+    transType: 1,
+  },
+  {
+    categoryName: 'Pipe',
+    fbId: '-M2eltVLXx4qKiNh5U5x',
+    id: 64,
+    isDeleted: false,
+    orderSeq: 115,
+    transType: 1,
+  },
+  {
+    categoryName: 'Salary',
+    fbId: '-M2eltVLXx4qKiNh5U5y',
+    id: 2,
+    isDeleted: true,
+    orderSeq: 116,
+    transType: 0,
+  },
+  {
+    categoryName: 'Petty cash',
+    fbId: '-M2eltVLXx4qKiNh5U5z',
+    id: 3,
+    isDeleted: true,
+    orderSeq: 117,
+    transType: 0,
+  },
+  {
+    categoryName: 'Gifts',
+    fbId: '-M2eltVM9APZ5vr7k3rB',
+    id: 4,
+    isDeleted: false,
+    orderSeq: 118,
+    transType: 0,
+  },
+  {
+    categoryName: 'Allowance',
+    fbId: '-M2eltVM9APZ5vr7k3rC',
+    id: 1,
+    isDeleted: false,
+    orderSeq: 119,
+    transType: 0,
+  },
+  {
+    categoryName: 'Social Life',
+    fbId: '-M2eltVM9APZ5vr7k3rD',
+    id: 7,
+    isDeleted: true,
+    orderSeq: 120,
+    transType: 1,
+  },
+  {
+    categoryName: 'Other',
+    fbId: '-M2eltVM9APZ5vr7k3rE',
+    id: 5,
+    isDeleted: true,
+    orderSeq: 121,
+    transType: 0,
+  },
+  {
+    categoryName: 'Self-development',
+    fbId: '-M2eltVM9APZ5vr7k3rF',
+    id: 8,
+    isDeleted: true,
+    orderSeq: 122,
+    transType: 1,
+  },
+  {
+    categoryName: 'Gifts',
+    fbId: '-M2eltVNsU25b1sgEQ3S',
+    id: 80,
+    isDeleted: true,
+    orderSeq: 181,
+    transType: 0,
+  },
+];
 
 @Component({
   selector: 'app-home',
@@ -49,6 +259,7 @@ export class HomePage implements OnInit {
   subCategoryFromFb: any[];
   accountFromFb: any[];
   transactionFromFb: any[];
+  catorderFromFb: any[];
 
   catsRef: AngularFireList<any>;
   subCatsRef: AngularFireList<any>;
@@ -56,7 +267,7 @@ export class HomePage implements OnInit {
 
   constructor(private db: AngularFireDatabase, private http: HttpClient) {
     // .startAt('2020-02-01')
-    const transRef = db.list('transaction', ref => ref.orderByChild('date').startAt('2020-01-01'));
+    /*     const transRef = db.list('transaction', ref => ref.orderByChild('date').startAt('2020-01-01'));
     transRef.valueChanges().subscribe(data => {
       // console.log('TC: HomePage -> transaction -> data', JSON.stringify(data, null, 2));
       this.transactionFromFb = data;
@@ -78,6 +289,13 @@ export class HomePage implements OnInit {
       .subscribe(res => {
         console.log('TC: HomePage -> subcategory -> res', res);
         this.subCategoryFromFb = res;
+      }); */
+
+      db.list('catorder/catorder')
+      .valueChanges()
+      .subscribe(res => {
+        console.log('TC: HomePage -> catorder -> res', res);
+        this.catorderFromFb = res;
       });
   }
 
@@ -86,7 +304,7 @@ export class HomePage implements OnInit {
     // this.fetchSubCategory();
     // this.fetchAccount();
     // this.fetchTransaction();
-    this.fetchTotals();
+    // this.fetchTotals();
   }
 
   fetchCategory() {
@@ -161,53 +379,52 @@ export class HomePage implements OnInit {
 
   importTotals() {
     const totalsRef = this.db.list<any>('totals');
-    this.totals['expense'].forEach( async item => {
-      await totalsRef.set(item.month, {month: item.month, expense: item.expense}).then(_ => console.log('Done'));
-    })
-    this.totals['income'].forEach( async item => {
-      await totalsRef.update(item.month, {income: item.income}).then(_ => console.log('Done'));
-    })
+    this.totals['expense'].forEach(async item => {
+      await totalsRef
+        .set(item.month, { month: item.month, expense: item.expense })
+        .then(_ => console.log('Done'));
+    });
+    this.totals['income'].forEach(async item => {
+      await totalsRef.update(item.month, { income: item.income }).then(_ => console.log('Done'));
+    });
     // {month: "2019-01", expense: 6305.29}
   }
 
-  // importTransaction_() {
-  //   const transRef = this.afs.collection('transaction');
-  //   this.transaction.forEach(async item => {
-  //     const keyRef = this.afs.createId();
-  //     const payload = {
-  //       fbId: keyRef,
-  //       id: item.id,
-  //       accountId: item.account_id,
-  //       amount: item.amount,
-  //       fullDate: new Date(item.full_date),
-  //       shortDate: item.short_date,
-  //       categoryName: item.category_name,
-  //       memo: item.memo || null,
-  //       isDeleted: item.is_deleted,
-  //       mainCategoryId: item.main_category_id,
-  //       subCategoryId: item.sub_category_id,
-  //     };
-  //     await transRef
-  //       .doc('2019-01')
-  //       .collection('trans')
-  //       .doc(keyRef)
-  //       .set(payload)
-  //       .then(() => console.log('Done'));
-  //   });
-  // }
-  // {
-  //   "id": 93,
-  //   "account_id": 6,
-  //   "trans_type": 1,
-  //   "amount": 67.00,
-  //   "full_date": "2019-01-01 00:00:00.000000",
-  //   "short_date": "2019-01-01",
-  //   "category_name": "Beauty/Hair",
-  //   "memo": null,
-  //   "is_deleted": false,
-  //   "main_category_id": 13,
-  //   "sub_category_id": 67
-  // }
+  replaceAccounts() {
+    const accRef = this.db.list('account');
+    ACCOUNTS.forEach(async item => {
+      const payload = {
+        id: item.fbId,
+        accName: item.accountName,
+        isDeleted: item.isDeleted,
+      };
+      console.log('TC: HomePage -> replaceAccounts -> payload', payload);
+      await accRef.set(payload.id, payload).then(() => console.log('Done'));
+    });
+  }
+
+  replaceCategories() {
+    const catsRef = this.db.list('category');
+    CATEGORIES.forEach(async item => {
+      const payload = {
+        id: item.fbId,
+        catName: item.categoryName,
+        isDeleted: item.isDeleted,
+        type: item.transType,
+      };
+      await catsRef.set(payload.id, payload).then(() => console.log('Done'));
+    });
+  }
+
+  async replaceCatsOrder() {
+    const catsOrderRef = this.db.list('catorder');
+    let tempArr = [];
+    CATEGORIES.forEach(item => {
+      tempArr.push(item.fbId);
+    });
+    console.log('TC: HomePage -> replaceCatsOrder -> tempArr', tempArr);
+    await catsOrderRef.set('catorder', tempArr);
+  }
 
   importCategory() {
     this.catsRef = this.db.list<any>('category');

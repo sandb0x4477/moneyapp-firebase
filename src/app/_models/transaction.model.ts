@@ -1,4 +1,4 @@
-export interface Transaction {
+export interface TransactionModel {
   accId:      string;
   accName:    string;
   amount:     number;

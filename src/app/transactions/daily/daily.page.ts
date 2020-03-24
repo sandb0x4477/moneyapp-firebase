@@ -4,7 +4,7 @@ import { subMonths, addMonths } from 'date-fns';
 
 import { FirebaseService } from '../../_services/firebase.service';
 
-import { Transaction } from '../../_models/transaction.model';
+import { TransactionModel } from '../../_models/transaction.model';
 import { UtilityService } from '../../_services/utility.service';
 
 @Component({
@@ -21,29 +21,29 @@ export class DailyPage implements OnInit, OnDestroy {
   totalExpense = 0;
 
   selectedDate = subMonths(new Date(), 10);
-  transactions: Transaction[];
+  transactions: TransactionModel[];
 
   constructor(public fbService: FirebaseService, private utilitySrv: UtilityService) {}
 
   ngOnInit() {
     this.nextQuery();
-    this.subs.sink = this.fbService.transaction$.subscribe(res => {
+    this.subs.sink = this.fbService.transactions$.subscribe(res => {
       console.log('TC: DailyPage -> ngOnInit -> res', res);
       this.transactions = res;
       this.processData(res);
     });
   }
 
-  onTransClick(trans: Transaction) {
+  onTransClick(trans: TransactionModel) {
     console.log('TC: DailyPage -> onTransClick -> trans', trans);
   }
 
-  processData(transactions: Transaction[]) {
+  processData(transactions: TransactionModel[]) {
     const shortDatesOfMonth: string[] = this.utilitySrv.getShortDates(this.selectedDate);
     this.populateDaysCard(shortDatesOfMonth, transactions);
   }
 
-  populateDaysCard(shortDatesOfMonth: string[], transactions: Transaction[]) {
+  populateDaysCard(shortDatesOfMonth: string[], transactions: TransactionModel[]) {
     this.dailyData = [];
     this.totalIncome = 0;
     this.totalExpense = 0;
@@ -75,7 +75,7 @@ export class DailyPage implements OnInit, OnDestroy {
     this.fbService.nextQuery(this.utilitySrv.getQuery(this.selectedDate));
   }
 
-  ngOnDestroy(): void {
+  ngOnDestroy() {
     this.subs.unsubscribe();
   }
 }

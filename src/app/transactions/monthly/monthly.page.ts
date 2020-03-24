@@ -3,7 +3,7 @@ import { SubSink } from 'subsink';
 import { filter, tap } from 'rxjs/operators';
 
 import { FirebaseService } from '../../_services/firebase.service';
-import { Total } from '../../_models/total.model';
+import { TotalModel } from '../../_models/total.model';
 
 @Component({
   selector: 'app-monthly',
@@ -13,8 +13,8 @@ import { Total } from '../../_models/total.model';
 export class MonthlyPage implements OnInit, OnDestroy {
   subs = new SubSink();
   selectedYear = '2019';
-  totals: Total[];
-  totalsRes: Total[];
+  totals: TotalModel[];
+  totalsRes: TotalModel[];
 
   totalIncome: number;
   totalExpense: number;

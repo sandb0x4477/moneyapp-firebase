@@ -11,7 +11,7 @@ import {
   subMonths,
   eachDayOfInterval,
 } from 'date-fns';
-import { Transaction } from '../_models/transaction.model';
+import { TransactionModel } from '../_models/transaction.model';
 
 @Injectable({
   providedIn: 'root'
@@ -56,7 +56,7 @@ export class UtilityService {
     return shortDates;
   }
 
-  getDayHeader(day: Transaction[]) {
+  getDayHeader(day: TransactionModel[]) {
     let income = 0;
     let expense = 0;
     let dayOfTheMonth: string;
