@@ -25,7 +25,7 @@
       <ng-container *ngFor="let item of expenseCats; let i=index">
         <ion-item detail lines="full" button>
           <ion-icon slot="start" name="pencil" (click)="editInModal(item)"></ion-icon>
-          <ion-label>
+          <ion-label (click)="navtigateToSubcategory(item)">
             {{item.catName}}
           </ion-label>
           <ion-reorder slot="end"></ion-reorder>
@@ -44,7 +44,7 @@
       <ng-container *ngFor="let item of incomeCats; let i=index">
         <ion-item detail lines="full" button>
           <ion-icon slot="start" name="pencil" (click)="editInModal(item)"></ion-icon>
-          <ion-label>
+          <ion-label (click)="navtigateToSubcategory(item)">
             {{item.catName}}
           </ion-label>
           <ion-reorder slot="end"></ion-reorder>

@@ -1,0 +1,37 @@
+.inc-exp-total {
+  display: grid;
+  grid-template-columns: repeat(3, auto);
+  justify-items: center;
+  margin: 12px 6px 6px 6px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.inc-exp-total-column {
+  min-height: 34px;
+  align-self: center;
+}
+
+.inc-exp-total-column-text {
+  font-size: 0.85em;
+  text-align: center;
+}
+
+.inc-exp-total-column-number {
+  font-size: 0.9em;
+  text-align: center;
+}
+
+.days-of-week {
+  display: grid;
+  grid-template-columns: repeat(7, auto);
+  justify-items: center;
+  border: 1px solid var(--border-color);
+  margin: 6px 6px 0px 6px;
+  border-bottom: none;
+}
+
+.week-day {
+  font-size: 0.75em;
+  padding: .55em 0;
+}

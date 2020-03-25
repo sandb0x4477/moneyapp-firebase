@@ -7,6 +7,7 @@ import { TotalModel } from '../_models/total.model';
 import { TransactionModel } from '../_models/transaction.model';
 import { AccountModel } from '../_models/account.model';
 import { CategoryModel } from '../_models/category.model';
+import { SubCategoryModel } from '../_models/subcategory.model';
 
 interface Query {
   start: string;
@@ -23,7 +24,9 @@ export class FirebaseService {
   totals$: Observable<TotalModel[]>;
   accounts$: Observable<AccountModel[]>;
   categories$: Observable<CategoryModel[]>;
+  subcategories$: Observable<SubCategoryModel[]>;
   catorder: string[];
+  subcatorder: string[];
 
   constructor(private db: AngularFireDatabase) {
     this.dateQuery$ = new BehaviorSubject(null);
@@ -31,7 +34,7 @@ export class FirebaseService {
     // ! CATEGORY ORDERED
     this.categories$ = combineLatest([
       db.list<CategoryModel>('category').valueChanges(),
-      db.list<string>('catorder/catorder').valueChanges(),
+      db.list<string>('catorder').valueChanges(),
     ]).pipe(
       tap(([, catorder]) => {
         this.catorder = catorder;
@@ -39,6 +42,18 @@ export class FirebaseService {
       map(([categories, catorder]) => this.sortCategories(categories, catorder)),
       distinctUntilChanged(),
     );
+
+    this.subcategories$ = combineLatest([
+      db.list<SubCategoryModel>('subcategory').valueChanges(),
+      db.list<string>('subcatorder').valueChanges(),
+    ]).pipe(
+      tap(([, subcatorder]) => {
+        this.subcatorder = subcatorder;
+      }),
+      map(([subcategories, subcatorder]) => this.sortSubCategories(subcategories, subcatorder)),
+      distinctUntilChanged(),
+    );
+
 
     // ? ACCOUNTS
     this.accounts$ = db
@@ -52,7 +67,7 @@ export class FirebaseService {
       .valueChanges()
       .pipe(distinctUntilChanged());
 
-    // ! TRANSACTIONS
+    // ? TRANSACTIONS
     this.transactions$ = this.dateQuery$.pipe(
       switchMap(query =>
         query
@@ -76,6 +91,13 @@ export class FirebaseService {
     return tempArr;
   }
 
+  sortSubCategories(subcategories: SubCategoryModel[], subcatorder: string[]) {
+    const tempArr = [];
+    subcatorder.forEach(el => tempArr.push(subcategories.find(e => e.id === el)));
+    return tempArr;
+  }
+
+
   async onReorder(moveFrom: string, moveTo: string, type: string) {
     const orderRef = this.db.list<string[]>(type);
     const orderTemp = [...this[type]];
@@ -84,10 +106,83 @@ export class FirebaseService {
     orderTemp.splice(moveFromIdx, 1);
     orderTemp.splice(moveToIdx, 0, moveFrom);
 
-    await orderRef.set(type, orderTemp).then(() => console.log('Reorder OK'))
+    await orderRef.set('/', orderTemp).then(() => console.log('Reorder OK'));
+  }
+
+  // ! ACCOUNT
+  // ? ADD
+  async addAccount(payload: Partial<AccountModel>) {
+    const accRef = this.db.list('account');
+    const keyRef = this.db.createPushId();
+    const newAccount = {
+      ...payload,
+      id: keyRef,
+    };
+    await accRef.set(keyRef, newAccount);
+  }
+
+  // ? EDIT
+  async updateAccount(payload: Partial<AccountModel>) {
+    const accRef = this.db.list('account');
+    await accRef.update(payload.id, payload);
+  }
+
+  // ! CATEGORY
+  // ? ADD
+  async addCategory(payload: Partial<CategoryModel>) {
+    let orderTemp = [...this.catorder];
+    const keyRef = this.db.createPushId();
+    orderTemp.push(keyRef);
+
+    const newEntry = {};
+    newEntry[`category/${keyRef}`] = {
+      ...payload,
+      id: keyRef,
+    };
+
+    newEntry['/catorder'] = orderTemp;
+
+    await this.db.database
+      .ref()
+      .update(newEntry)
+      .catch(err => console.log(err));
+  }
+
+  // ? EDIT
+  async updateCategory(payload: Partial<CategoryModel>) {
+    const accRef = this.db.list('category');
+    await accRef.update(payload.id, payload);
+  }
+
+  // ! SUBCATEGORY
+  // ? ADD
+  async addSubCategory(payload: Partial<SubCategoryModel>) {
+    let orderTemp = [...this.subcatorder];
+    const keyRef = this.db.createPushId();
+    orderTemp.push(keyRef);
+
+    const newEntry = {};
+    newEntry[`subcategory/${keyRef}`] = {
+      ...payload,
+      id: keyRef,
+    };
+
+    newEntry['/subcatorder'] = orderTemp;
+
+    await this.db.database
+      .ref()
+      .update(newEntry)
+      .catch(err => console.log(err));
+  }
+
+  // ? EDIT
+  async updateSubCategory(payload: Partial<SubCategoryModel>) {
+    const accRef = this.db.list('subcategory');
+    await accRef.update(payload.id, payload);
   }
 
   nextQuery(query: Query) {
+    console.log('TC: nextQuery -> query', query);
     this.dateQuery$.next(query);
   }
 }

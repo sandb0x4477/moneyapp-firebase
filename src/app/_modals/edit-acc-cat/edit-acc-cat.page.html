@@ -17,6 +17,24 @@
     <ion-input [(ngModel)]="name" type="text" required></ion-input>
   </ion-item>
 
+  <ng-container *ngIf="flag === 'add' && type === 'category'">
+    <ion-radio-group [(ngModel)]="incomeExpense">
+      <ion-list-header>
+        <ion-label>Expense or Income?</ion-label>
+      </ion-list-header>
+
+      <ion-item>
+        <ion-label>Expense</ion-label>
+        <ion-radio slot="start" value="Expense" name="type" ></ion-radio>
+      </ion-item>
+
+      <ion-item>
+        <ion-label>Income</ion-label>
+        <ion-radio slot="start" value="Income" name="type"></ion-radio>
+      </ion-item>
+    </ion-radio-group>
+  </ng-container>
+
   <br />
 
   <ion-button
@@ -28,4 +46,9 @@
     >Submit</ion-button
   >
   <ion-button color="medium" expand="block" (click)="dismissModal()">Cancel</ion-button>
+  <br>
+  <br>
+  <ion-button color="danger" expand="block" (click)="delete()" *ngIf="flag === 'edit'"
+    >Delete</ion-button
+  >
 </ion-content>

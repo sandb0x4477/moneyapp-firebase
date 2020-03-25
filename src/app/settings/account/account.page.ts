@@ -22,13 +22,20 @@ export class AccountPage implements OnInit, OnDestroy {
     this.subs.sink = this.fbService.accounts$
       .pipe(map(acc => acc.filter(a => a.isDeleted === false)))
       .subscribe(res => {
-        console.log('TC: AccountPage -> ngOnInit -> res', res);
         this.accounts = res;
       });
   }
 
   editInModal(item: AccountModel) {
     console.log('TC: AccountPage -> editInModal -> item', item);
+    const componentProps = {
+      title: 'Edit Account',
+      flag: 'edit',
+      type: 'account',
+      name: item.accName,
+      id: item.id,
+    };
+    this.presentModal(componentProps, EditAccCatPage);
   }
 
   addNewInModal() {
@@ -36,20 +43,46 @@ export class AccountPage implements OnInit, OnDestroy {
       title: 'Add Account',
       flag: 'add',
       type: 'account',
-      name: ''
-    }
-    this.presentModal(componentProps, EditAccCatPage)
+      name: '',
+    };
+    this.presentModal(componentProps, EditAccCatPage);
   }
 
   async presentModal(componentProps: any, component: any) {
     const modal = await this.modalCtrl.create({
       component,
-      componentProps
+      componentProps,
     });
     await modal.present();
 
     const { data } = await modal.onWillDismiss();
-    console.log('TC: CalendarPage -> presentModal -> data', data);
+    if (!data) {
+      return;
+    }
+
+    if (data.flag === 'add') {
+      const payload: AccountModel = {
+        accName: data.name,
+        isDeleted: false,
+      };
+      await this.fbService.addAccount(payload);
+    }
+
+    if (data.flag === 'edit') {
+      const payload: Partial<AccountModel> = {
+        id: data.id,
+        accName: data.name,
+      };
+      await this.fbService.updateAccount(payload);
+    }
+
+    if (data.flag === 'delete') {
+      const payload = {
+        id: data.id,
+        isDeleted: true
+      }
+      this.fbService.updateAccount(payload);
+    }
   }
 
   ngOnDestroy() {

@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { Plugins } from '@capacitor/core';
 import {
   format,
   startOfYear,
@@ -10,15 +11,20 @@ import {
   subYears,
   subMonths,
   eachDayOfInterval,
+  addDays,
+  startOfWeek,
 } from 'date-fns';
+
 import { TransactionModel } from '../_models/transaction.model';
 
+const { Storage } = Plugins;
+
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class UtilityService {
   queryFormat = 'yyyy-MM-dd';
-  constructor() { }
+  constructor() {}
 
   getQuery(selectedDate: Date, dateInYears: boolean = false, catlastEight: boolean = false) {
     let query: any = {};
@@ -33,6 +39,15 @@ export class UtilityService {
       query.end = format(endOfMonth(selectedDate), this.queryFormat);
     }
     console.log('TC: UtilityService -> getQuery -> query', query);
+    return query;
+  }
+
+  getCalendarQuery(selectedDate: Date) {
+    const firstDay = startOfWeek(startOfMonth(selectedDate), {weekStartsOn: 1});
+    const query = {
+      start: format(firstDay, this.queryFormat),
+      end: format(addDays(firstDay, 41), this.queryFormat),
+    };
     return query;
   }
 
@@ -80,5 +95,17 @@ export class UtilityService {
       weekDay,
     };
     return { payload, expense, income };
+  }
+
+  async dataTransferSet(data: any) {
+    await Storage.set({
+      key: 'transfer',
+      value: JSON.stringify(data),
+    });
+  }
+
+  async dataTransferGet() {
+    const ret = await Storage.get({ key: 'transfer' });
+    return JSON.parse(ret.value);
   }
 }

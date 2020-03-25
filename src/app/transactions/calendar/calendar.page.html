@@ -1,0 +1,41 @@
+<ion-content>
+
+  <ion-button (click)="prevoiusDate()">Prev date</ion-button>
+  <ion-button (click)="nextDate()">Next date</ion-button>
+
+  <div class="inc-exp-total">
+    <div class="inc-exp-total-column">
+      <div class="inc-exp-total-column-text">
+        Income
+      </div>
+      <div class="inc-exp-total-column-number" style="color: #2e6de4;">
+        {{totalForCurrentMonth?.income | number: '1.2-2' }}
+      </div>
+    </div>
+
+    <div class="inc-exp-total-column">
+      <div class="inc-exp-total-column-text">
+        Expenses
+      </div>
+      <div class="inc-exp-total-column-number" style="color: #c92626;">
+        {{totalForCurrentMonth?.expense | number: '1.2-2' }}
+      </div>
+    </div>
+
+    <div class="inc-exp-total-column">
+      <div class="inc-exp-total-column-text">
+        Total
+      </div>
+      <div class="inc-exp-total-column-number">
+        {{totalForCurrentMonth?.income - totalForCurrentMonth?.expense | number: '1.2-2' }}
+      </div>
+    </div>
+    </div>
+
+  <div class="days-of-week">
+    <ng-container *ngFor="let weekDay of weekDays">
+      <div class="week-day">{{ weekDay }}</div>
+    </ng-container>
+  </div>
+
+</ion-content>
