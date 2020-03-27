@@ -6,6 +6,8 @@ import { FirebaseService } from '../../_services/firebase.service';
 
 import { TransactionModel } from '../../_models/transaction.model';
 import { UtilityService } from '../../_services/utility.service';
+import { ModalController } from '@ionic/angular';
+import { EditTransPage } from '../../_modals/edit-trans/edit-trans.page';
 
 @Component({
   selector: 'app-daily',
@@ -23,7 +25,11 @@ export class DailyPage implements OnInit, OnDestroy {
   selectedDate = subMonths(new Date(), 10);
   transactions: TransactionModel[];
 
-  constructor(public fbService: FirebaseService, private utilitySrv: UtilityService) {}
+  constructor(
+    public fbService: FirebaseService,
+    private utilitySrv: UtilityService,
+    private modalCtrl: ModalController,
+  ) {}
 
   ngOnInit() {
     this.nextQuery();
@@ -59,7 +65,27 @@ export class DailyPage implements OnInit, OnDestroy {
     });
   }
 
-  addNewInModal() {}
+  addNewInModal() {
+    let trans: TransactionModel = {} as TransactionModel;
+    const componentProps = {
+      title: 'New Transaction',
+      flag: 'add',
+      type: 1,
+      trans,
+    };
+    this.presentModal(componentProps, EditTransPage);
+  }
+
+  async presentModal(componentProps: any, component: any) {
+    const modal = await this.modalCtrl.create({
+      component,
+      componentProps,
+    });
+    await modal.present();
+
+    const { data } = await modal.onWillDismiss();
+    console.log('TC: DailyPage -> presentModal -> data', data);
+  }
 
   nextDate() {
     this.selectedDate = addMonths(this.selectedDate, 1);

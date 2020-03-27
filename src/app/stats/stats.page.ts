@@ -14,6 +14,7 @@ import { CHARTCOLORS } from '../_config/chart.colors';
 import { FirebaseService } from '../_services/firebase.service';
 import { UtilityService } from '../_services/utility.service';
 import { TransactionModel } from '../_models/transaction.model';
+import { Router } from '@angular/router';
 
 NoDataToDisplay(Highcharts);
 
@@ -30,7 +31,15 @@ export class StatsPage implements OnInit, OnDestroy {
 
   statData: StatData[];
 
-  constructor(public fbService: FirebaseService, private utilitySrv: UtilityService) {}
+  constructor(
+    public fbService: FirebaseService,
+    private utilitySrv: UtilityService,
+    private router: Router,
+  ) {}
+
+  ionViewDidEnter() {
+    this.resize();
+  }
 
   ngOnInit() {
     this.nextQuery();
@@ -100,7 +109,7 @@ export class StatsPage implements OnInit, OnDestroy {
             format: '{point.name}: {point.percentage:.0f} %',
             style: {
               fontWeight: 'normal',
-              fontSize: '11px',
+              fontSize: '1.1em',
               fontFamily: 'RobotoCondensed',
             },
           },
@@ -116,8 +125,10 @@ export class StatsPage implements OnInit, OnDestroy {
     });
   }
 
-  goToStatsDetail(item: any) {
+  async goToStatsDetail(item: StatData) {
     console.log('TC: StatsPage -> goToStatsDetail -> item', item);
+    await this.utilitySrv.dataTransferSet(item);
+    this.router.navigate(['app/stats/detail', item.mainCatId]);
   }
 
   nextDate() {
@@ -132,6 +143,16 @@ export class StatsPage implements OnInit, OnDestroy {
 
   nextQuery() {
     this.fbService.nextQuery(this.utilitySrv.getQuery(this.selectedDate));
+  }
+
+  resize() {
+    if (!this.statData) {
+      return;
+    }
+    this.renderPieChart(this.statData);
+    // setTimeout(() => {
+    //   window.dispatchEvent(new Event('resize'));
+    // }, 200);
   }
 
   ngOnDestroy() {

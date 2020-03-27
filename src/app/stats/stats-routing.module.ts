@@ -7,6 +7,10 @@ const routes: Routes = [
   {
     path: '',
     component: StatsPage
+  },
+  {
+    path: 'detail/:id',
+    loadChildren: () => import('./stats-details/stats-details.module').then( m => m.StatsDetailsPageModule)
   }
 ];
 

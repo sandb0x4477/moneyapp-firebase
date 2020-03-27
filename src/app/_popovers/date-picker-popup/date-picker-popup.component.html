@@ -1,0 +1,28 @@
+<ion-content class="ion-padding">
+
+  <div class="selectmonth-container">
+    <div class="chevron" (click)="onPrevMonth()">
+      <ion-icon slot="icon-only" name="chevron-back"></ion-icon>
+    </div>
+    <div>{{ selectedDate | date: 'MMM yyyy' }}</div>
+    <div class="chevron" (click)="onNextMonth()">
+      <ion-icon slot="icon-only" name="chevron-forward"></ion-icon>
+    </div>
+  </div>
+  <div class="days-of-week">
+    <ng-container *ngFor="let weekDay of weekDays">
+      <div class="week-day">{{ weekDay }}</div>
+    </ng-container>
+  </div>
+  <div class="day-cells">
+    <div
+      *ngFor="let day of daycells"
+      (click)="onDayClick(day)"
+      [class.isSunday]="day.isSunday"
+      [class.cellDisabled]="!day.isSameMonth"
+      [class.isToday]="day.isToday"
+    >
+      {{ day.cellDay }}
+    </div>
+  </div>
+</ion-content>

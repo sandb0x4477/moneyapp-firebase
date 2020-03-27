@@ -8,6 +8,7 @@ import { DailyPageRoutingModule } from './daily-routing.module';
 
 import { DailyPage } from './daily.page';
 import { DailyTransModule } from '../../_components/daily-trans/daily-trans.module';
+import { EditTransPageModule } from '../../_modals/edit-trans/edit-trans.module';
 
 @NgModule({
   imports: [
@@ -15,7 +16,8 @@ import { DailyTransModule } from '../../_components/daily-trans/daily-trans.modu
     FormsModule,
     IonicModule,
     DailyPageRoutingModule,
-    DailyTransModule
+    DailyTransModule,
+    EditTransPageModule
   ],
   declarations: [DailyPage]
 })

@@ -1,0 +1,23 @@
+.container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  // align-items: center;
+}
+
+.backdrop-no-scroll ion-content {
+  --overflow: hidden;
+}
+
+.empty-item {
+  --border-width: 0 0 0px 0;
+  --inner-border-width: 0;
+}
+
+.one-pixel {
+  height: 1px;
+}
+
+.sub-label {
+  font-size: 95%;
+  color: #4e4e4e;
+}

@@ -1,11 +1,11 @@
 <ion-content>
   <ion-button (click)="prevoiusDate()">Prev date</ion-button>
   <ion-button (click)="nextDate()">Next date</ion-button>
-  <br>
+  <br />
 
   <ion-card>
     <ion-card-content>
-      <div id="container"></div>
+      <div id="container" (window:resize)="resize($event)"></div>
     </ion-card-content>
   </ion-card>
 
@@ -18,5 +18,4 @@
       </ion-item>
     </ng-container>
   </ion-list>
-
 </ion-content>

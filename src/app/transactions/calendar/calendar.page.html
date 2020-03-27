@@ -2,7 +2,7 @@
 
   <ion-button (click)="prevoiusDate()">Prev date</ion-button>
   <ion-button (click)="nextDate()">Next date</ion-button>
-
+{{selectedDate | date: 'yyyy-MM'}}
   <div class="inc-exp-total">
     <div class="inc-exp-total-column">
       <div class="inc-exp-total-column-text">
@@ -38,4 +38,24 @@
     </ng-container>
   </div>
 
+  <div class="calendar">
+    <div
+      class="cell"
+      *ngFor="let cell of calendarData"
+      [class.cellDisabled]="!cell.isSameMonth"
+      [class.selected]="cell.isToday"
+    >
+      <div class="cell-number" [class.isSunday]="cell.isSunday">
+        {{ cell.cellDay }}
+      </div>
+      <div class="cell-expense">
+        {{ cell.expense | number: '1.2-2' }}
+      </div>
+      <div class="cell-income">
+        {{ cell.income | number: '1.2-2' }}
+      </div>
+    </div>
+  </div>
+
 </ion-content>
+<!--       (click)="onCellClick(cell)" -->

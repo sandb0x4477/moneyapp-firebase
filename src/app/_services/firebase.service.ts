@@ -54,7 +54,6 @@ export class FirebaseService {
       distinctUntilChanged(),
     );
 
-
     // ? ACCOUNTS
     this.accounts$ = db
       .list<AccountModel>('account', ref => ref.orderByChild('accName'))
@@ -97,7 +96,6 @@ export class FirebaseService {
     return tempArr;
   }
 
-
   async onReorder(moveFrom: string, moveTo: string, type: string) {
     const orderRef = this.db.list<string[]>(type);
     const orderTemp = [...this[type]];
@@ -108,6 +106,13 @@ export class FirebaseService {
 
     await orderRef.set('/', orderTemp).then(() => console.log('Reorder OK'));
   }
+// @ =======================================================================================
+
+  // ! TRANSACTIONS
+  async addTransaction(trans: Partial<TransactionModel>) {
+
+  }
+
 
   // ! ACCOUNT
   // ? ADD

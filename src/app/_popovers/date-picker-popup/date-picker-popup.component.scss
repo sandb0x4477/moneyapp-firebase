@@ -1,0 +1,68 @@
+.container {
+  padding: 12px;
+}
+
+.selectmonth-container {
+  display: grid;
+  grid-template-columns: 50px auto 50px;
+  justify-content: space-between;
+  //background-color: #f6fff4;
+  padding: 0.5rem;
+  //margin-top: 12px;
+
+  .chevron {
+    text-align: center;
+    cursor: pointer;
+  }
+}
+
+.days-of-week {
+  display: grid;
+  grid-template-columns: repeat(7, auto);
+  justify-items: center;
+  // grid-gap: 6px;
+  justify-content: space-between;
+  margin-top: 6px;
+  // border: 1px solid var(--border-color);
+  // margin: 6px 6px 0px 6px;
+  border-bottom: none;
+  :nth-of-type(7) {
+    color: #ff5757
+  }
+}
+
+.week-day {
+  // text-transform: uppercase;
+  // font-weight: 400;
+  // color: var(--text-color-light);
+  // font-size: 70%;
+  font-size: 0.65em;
+  // padding: .55em 0;
+  // border-right: 1px solid var(--border-color);
+}
+
+.day-cells {
+  display: grid;
+  grid-template-columns: repeat(7, auto);
+  justify-items: center;
+  grid-gap: 16px;
+  margin-top: 12px;
+  & > div {
+    cursor: pointer;
+
+    &.cellDisabled {
+      //background: #f1f1f1;
+      opacity: 0.5;
+      // pointer-events: none;
+    }
+
+    &.isSunday {
+      color: #ff5757;
+    }
+
+    &.isToday {
+      color: #2e6de4;
+      text-decoration: underline;
+    }
+  }
+}

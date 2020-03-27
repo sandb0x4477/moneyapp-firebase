@@ -1,3 +1,4 @@
+// ! TOTALS HEADER
 .inc-exp-total {
   display: grid;
   grid-template-columns: repeat(3, auto);
@@ -18,10 +19,11 @@
 }
 
 .inc-exp-total-column-number {
-  font-size: 0.9em;
+  font-size: 0.95em;
   text-align: center;
 }
 
+// ! WEEK HEADER
 .days-of-week {
   display: grid;
   grid-template-columns: repeat(7, auto);
@@ -32,6 +34,65 @@
 }
 
 .week-day {
-  font-size: 0.75em;
+  font-size: 0.8em;
   padding: .55em 0;
+}
+
+// ? CALENDAR
+.calendar {
+  display: grid;
+  box-sizing: content-box;
+  margin: 0px 6px 6px 6px;
+  grid-template-columns: repeat(7, 1fr);
+  // height: 70vh;
+  border-bottom: 1px solid var(--border-color);
+  border-right: 1px solid var(--border-color);
+}
+
+.cell {
+  // place-self: center;
+  display: grid;
+  grid-template-rows: 2fr 1fr 1fr;
+  box-sizing: border-box;
+  border-left: 1px solid var(--border-color);
+  border-top: 1px solid var(--border-color);
+  min-height: 86px;
+  cursor: pointer;
+
+  &:nth-of-type(7n + 7) {
+    border-right: 0;
+  }
+
+  &.cellDisabled {
+    background: #f1f1f1;
+    opacity: 0.6;
+  }
+
+  &.selected {
+    border-left: 3px solid #1bb7ffde;
+  }
+}
+
+.cell-number {
+  justify-self: end;
+  font-size: 0.75em;
+  padding: 0.3em;
+
+  &.isSunday {
+    color: var(--expense-color);
+  }
+}
+
+.cell-expense {
+  justify-self: end;
+  font-size: 0.75em;
+  padding: 0.3em;
+  color: var(--expense-color);
+}
+
+.cell-income {
+  justify-self: end;
+  font-size: 0.75em;
+  padding: 0.3em;
+  color: var(--income-color);
 }

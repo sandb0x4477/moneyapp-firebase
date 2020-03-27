@@ -1,0 +1,11 @@
+<ion-content>
+  <ion-list>
+    <ng-container *ngFor="let item of accounts; let i = index">
+      <ion-item lines="full" button (click)="onSelectAccount(item)">
+        <ion-label>
+          {{ item.accName }}
+        </ion-label>
+      </ion-item>
+    </ng-container>
+  </ion-list>
+</ion-content>

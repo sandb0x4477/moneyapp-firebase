@@ -1,0 +1,67 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="end">
+      <ion-button (click)="dismissModal()">
+        <ion-icon name="close" color="light"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>
+      {{ title }}
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <!-- ? DATE PICKER -->
+  <ion-item lines="full" (click)="openDatePicker($event)" button>
+    <ion-label>Date</ion-label>
+    <ion-label class="ion-text-right">{{ selectedDate | date: 'dd MMM yyyy' }}</ion-label>
+  </ion-item>
+
+  <!-- ? Account PICKER -->
+  <ion-item lines="full" (click)="openAccountsPopup($event)" button>
+    <ion-label>Account</ion-label>
+    <ion-label class="ion-text-right">{{trans?.accName}}</ion-label>
+  </ion-item>
+
+  <!-- ? CATEGORY PICKER -->
+  <ion-item lines="full" (click)="openCategoriesPopup($event)" button>
+    <ion-label>Category</ion-label>
+    <ion-label class="ion-text-right">{{trans?.catFull}}</ion-label>
+  </ion-item>
+
+  <!-- ? CALUCULATOR -->
+  <ion-item lines="full" (click)="openCalculator($event)" button>
+    <ion-label>Amount</ion-label>
+    <ion-label class="ion-text-right">{{ trans?.amount | number: '1.2-2' }}</ion-label>
+  </ion-item>
+
+  <!-- ? MEMO -->
+  <ion-item lines="full">
+    <ion-label position="fixed">Content</ion-label>
+    <ion-input [(ngModel)]="trans.memo" class="ion-text-right"></ion-input>
+  </ion-item>
+
+  <!-- ! SELECT REPEAT -->
+  <ion-item *ngIf="flag === 'add'">
+    <ion-label>Repeat</ion-label>
+    <ion-select
+      interface="popover"
+      value="0"
+      [(ngModel)]="selectedRepeatMode"
+      (ionChange)="onRepeatChoice($event)"
+    >
+      <ng-container *ngFor="let item of repeatTypes; let i = index">
+        <ion-select-option [value]="item.value">{{item.name}}</ion-select-option>
+      </ng-container>
+    </ion-select>
+  </ion-item>
+
+  <br />
+  <ion-button type="button" color="secondary" expand="block" (click)="onSubmit()" [disabled]="isDisabled()"
+    >Submit</ion-button
+  >
+  <ion-button color="medium" expand="block" (click)="dismissModal()">Cancel</ion-button>
+  <br />
+  <ion-button color="danger" expand="block" (click)="onDelete()" *ngIf="flag === 'edit'">Delete</ion-button>
+</ion-content>

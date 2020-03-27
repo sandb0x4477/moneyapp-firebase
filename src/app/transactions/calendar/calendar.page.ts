@@ -1,6 +1,18 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { SubSink } from 'subsink';
-import { subMonths, addMonths, format, startOfWeek, startOfMonth, addDays, getDate, isToday, isSunday, isSameWeek, isSameMonth } from 'date-fns';
+import {
+  subMonths,
+  addMonths,
+  format,
+  startOfWeek,
+  startOfMonth,
+  addDays,
+  getDate,
+  isToday,
+  isSunday,
+  isSameWeek,
+  isSameMonth,
+} from 'date-fns';
 
 import { TransactionModel } from '../../_models/transaction.model';
 import { UtilityService } from '../../_services/utility.service';
@@ -35,12 +47,12 @@ export class CalendarPage implements OnInit, OnDestroy {
     this.subs.sink = this.fbService.totals$.subscribe(res => {
       console.log('TC: CalendarPage -> ngOnInit -> res', res);
       this.totals = res;
-    });``
+    });
   }
 
   getCalendarDays(trans: TransactionModel[]) {
     let calendarCells = [];
-    const firstDay = startOfWeek(startOfMonth(this.selectedDate), {weekStartsOn: 1});
+    const firstDay = startOfWeek(startOfMonth(this.selectedDate), { weekStartsOn: 1 });
     for (let i = 0; i < 42; i++) {
       let cell: any = {
         cellDay: getDate(addDays(firstDay, i)),
@@ -53,17 +65,25 @@ export class CalendarPage implements OnInit, OnDestroy {
         isSameMonth: isSameMonth(this.selectedDate, addDays(firstDay, i)),
         expense: null,
         income: null,
+      };
+
+      const expenseForDay = trans.filter(d => d.date === cell.cellDate && d.type === 1);
+      const incomeForDay = trans.filter(d => d.date === cell.cellDate && d.type === 0);
+
+      if (expenseForDay.length > 0) {
+        let expense = 0;
+        expenseForDay.forEach(el => {
+          expense += el.amount;
+        });
+        cell = { ...cell, expense };
       }
 
-      const expenseIdx = trans.findIndex(d => d.date === cell.cellDate && d.type === 1);
-      const incomeIdx = trans.findIndex(d => d.date === cell.cellDate && d.type === 0);
-
-      if (expenseIdx !== -1) {
-        cell = { ...cell, expense: trans[expenseIdx].amount };
-      }
-
-      if (incomeIdx !== -1) {
-        cell = { ...cell, income: trans[incomeIdx].amount };
+      if (incomeForDay .length > 0) {
+        let income = 0;
+        incomeForDay.forEach(el => {
+          income += el.amount;
+        });
+        cell = { ...cell, income };
       }
 
       calendarCells.push(cell);
