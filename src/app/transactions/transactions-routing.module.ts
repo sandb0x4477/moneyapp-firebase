@@ -6,20 +6,23 @@ import { TransactionsPage } from './transactions.page';
 const routes: Routes = [
   {
     path: '',
-    component: TransactionsPage
+    component: TransactionsPage,
+    children: [
+      {
+        path: 'monthly',
+        loadChildren: () => import('./monthly/monthly.module').then(m => m.MonthlyPageModule),
+      },
+      {
+        path: 'daily',
+        loadChildren: () => import('./daily/daily.module').then(m => m.DailyPageModule),
+      },
+      {
+        path: 'calendar',
+        loadChildren: () => import('./calendar/calendar.module').then(m => m.CalendarPageModule),
+      },
+    ],
   },
-  {
-    path: 'monthly',
-    loadChildren: () => import('./monthly/monthly.module').then( m => m.MonthlyPageModule)
-  },
-  {
-    path: 'daily',
-    loadChildren: () => import('./daily/daily.module').then( m => m.DailyPageModule)
-  },
-  {
-    path: 'calendar',
-    loadChildren: () => import('./calendar/calendar.module').then( m => m.CalendarPageModule)
-  }
+  { path: '', redirectTo: 'daily' },
 ];
 
 @NgModule({

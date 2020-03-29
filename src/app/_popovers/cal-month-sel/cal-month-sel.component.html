@@ -1,0 +1,19 @@
+<ion-content>
+  <div class="container">
+    <div class="chevron" (click)="onPrevYear()">
+      <ion-icon slot="icon-only" name="chevron-back"></ion-icon>
+    </div>
+    <div>{{selectedDate | date: 'yyyy' }}</div>
+    <div class="chevron" (click)="onNextYear()">
+      <ion-icon slot="icon-only" name="chevron-forward"></ion-icon>
+    </div>
+  </div>
+  <div class="month-container">
+    <div *ngFor="let month of months; let i=index" (click)="onMonthClick(i)">{{month}}</div>
+  </div>
+
+  <div class="buttons-container">
+    <div (click)="onThisMonth()">THIS MONTH</div>
+    <div (click)="onClose()">CLOSE</div>
+  </div>
+</ion-content>

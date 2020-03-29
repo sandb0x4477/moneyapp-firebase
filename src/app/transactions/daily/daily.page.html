@@ -14,7 +14,7 @@
         Income
       </div>
       <div class="inc-exp-total-column-number" style="color: #2e6de4;">
-        {{totalIncome | number: '1.2-2' }}
+        {{totalForCurrentMonth?.income | number: '1.2-2' }}
       </div>
     </div>
 
@@ -23,7 +23,7 @@
         Expenses
       </div>
       <div class="inc-exp-total-column-number" style="color: #c92626;">
-        {{totalExpense | number: '1.2-2' }}
+        {{totalForCurrentMonth?.expense | number: '1.2-2' }}
       </div>
     </div>
 
@@ -32,7 +32,7 @@
         Total
       </div>
       <div class="inc-exp-total-column-number">
-        {{totalIncome - totalExpense | number: '1.2-2' }}
+        {{totalForCurrentMonth?.expense - totalForCurrentMonth?.income | number: '1.2-2' }}
       </div>
     </div>
   </div>

@@ -8,6 +8,10 @@ const routes: Routes = [
     path: 'app',
     loadChildren: () => import('./tabs/tabs.module').then(m => m.TabsPageModule),
   },
+  {
+    path: 'import',
+    loadChildren: () => import('./import-fb/import-fb.module').then( m => m.ImportFbPageModule)
+  },
 ];
 
 @NgModule({

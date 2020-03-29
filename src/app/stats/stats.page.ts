@@ -25,7 +25,7 @@ NoDataToDisplay(Highcharts);
 })
 export class StatsPage implements OnInit, OnDestroy {
   chartColors = CHARTCOLORS;
-  selectedDate = subMonths(new Date(), 1);
+  selectedDate = subMonths(new Date(), 0);
   queryFormat = 'yyyy-MM-dd';
   subs = new SubSink();
 
@@ -37,20 +37,23 @@ export class StatsPage implements OnInit, OnDestroy {
     private router: Router,
   ) {}
 
-  ionViewDidEnter() {
-    this.resize();
-  }
-
-  ngOnInit() {
+  ionViewWillEnter() {
     this.nextQuery();
     this.subs.sink = this.fbService.transactions$
       .pipe(map(trans => trans.filter(t => t.type === 1)))
       .subscribe(res => {
-        console.log('TC: StatsPage -> ngOnInit -> res', res);
+        // console.log('TC: StatsPage -> ngOnInit -> res', res);
         // this.transactions = res;
         this.processData(res);
       });
+    this.resize();
   }
+
+  ionViewWillLeave() {
+    this.subs.unsubscribe();
+  }
+
+  ngOnInit() {}
 
   processData(trans: TransactionModel[]) {
     const total = _sumBy(trans, 'amount');

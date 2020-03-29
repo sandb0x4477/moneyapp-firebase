@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { AngularFireDatabase, AngularFireList } from '@angular/fire/database';
+import { AngularFireDatabase } from '@angular/fire/database';
 import { Observable, BehaviorSubject, of, combineLatest } from 'rxjs';
-import { distinctUntilChanged, switchMap, tap, map } from 'rxjs/operators';
+import { switchMap, tap, map, shareReplay } from 'rxjs/operators';
 
 import { TotalModel } from '../_models/total.model';
 import { TransactionModel } from '../_models/transaction.model';
@@ -19,17 +19,21 @@ interface Query {
 })
 export class FirebaseService {
   dateQuery$: BehaviorSubject<Query | null>;
+  dateQueryDaily$: BehaviorSubject<Query | null>;
 
   transactions$: Observable<TransactionModel[]>;
+  transactionsDaily$: Observable<TransactionModel[]>;
   totals$: Observable<TotalModel[]>;
   accounts$: Observable<AccountModel[]>;
   categories$: Observable<CategoryModel[]>;
   subcategories$: Observable<SubCategoryModel[]>;
+
   catorder: string[];
   subcatorder: string[];
 
   constructor(private db: AngularFireDatabase) {
     this.dateQuery$ = new BehaviorSubject(null);
+    this.dateQueryDaily$ = new BehaviorSubject(null);
 
     // ! CATEGORY ORDERED
     this.categories$ = combineLatest([
@@ -40,7 +44,8 @@ export class FirebaseService {
         this.catorder = catorder;
       }),
       map(([categories, catorder]) => this.sortCategories(categories, catorder)),
-      distinctUntilChanged(),
+      tap(_ => console.log('CATEGORY HIT')),
+      shareReplay(),
     );
 
     this.subcategories$ = combineLatest([
@@ -51,20 +56,46 @@ export class FirebaseService {
         this.subcatorder = subcatorder;
       }),
       map(([subcategories, subcatorder]) => this.sortSubCategories(subcategories, subcatorder)),
-      distinctUntilChanged(),
+      tap(_ => console.log('SUBCATEGORY HIT')),
+      shareReplay(),
     );
 
     // ? ACCOUNTS
     this.accounts$ = db
       .list<AccountModel>('account', ref => ref.orderByChild('accName'))
       .valueChanges()
-      .pipe(distinctUntilChanged());
+      .pipe(
+        tap(_ => console.log('ACCOUNTS HIT')),
+        shareReplay(),
+      );
 
     // ? TOTALS
     this.totals$ = db
       .list<TotalModel>('totals', ref => ref.orderByKey())
       .valueChanges()
-      .pipe(distinctUntilChanged());
+      .pipe(
+        tap(_ => console.log('TOTALS HIT')),
+        shareReplay(),
+      );
+
+    // ? TRANSACTIONS
+    this.transactionsDaily$ = this.dateQueryDaily$.pipe(
+      switchMap(query =>
+        query
+          ? db
+              .list<TransactionModel>('transaction', ref =>
+                ref
+                  .orderByChild('date')
+                  .startAt(query.start)
+                  .endAt(query.end),
+              )
+              .valueChanges()
+          : of([]),
+      ),
+      tap(_ => console.log('TRANSACTIONS DAILY HIT')),
+      // shareReplay(),
+    );
+
 
     // ? TRANSACTIONS
     this.transactions$ = this.dateQuery$.pipe(
@@ -80,7 +111,8 @@ export class FirebaseService {
               .valueChanges()
           : of([]),
       ),
-      distinctUntilChanged(),
+      tap(_ => console.log('TRANSACTIONS HIT')),
+      // shareReplay(),
     );
   }
 
@@ -106,14 +138,32 @@ export class FirebaseService {
 
     await orderRef.set('/', orderTemp).then(() => console.log('Reorder OK'));
   }
-// @ =======================================================================================
 
+  // ? =======================================================================================
   // ! TRANSACTIONS
+  // ? ADD
   async addTransaction(trans: Partial<TransactionModel>) {
+    const totalRef = await this.db.database.ref(`/totals/${trans.month}`).once('value');
+    const total = totalRef.val();
+    const keyRef = this.db.createPushId();
+    const newEntry = {};
 
+    newEntry[`transaction/${keyRef}`] = {
+      ...trans,
+      id: keyRef,
+    };
+    newEntry[`totals/${trans.month}`] = {
+      ...total,
+      expense: trans.amount + total.expense,
+    };
+
+    await this.db.database
+      .ref()
+      .update(newEntry)
+      .catch(err => console.log(err));
   }
 
-
+  // ? =======================================================================================
   // ! ACCOUNT
   // ? ADD
   async addAccount(payload: Partial<AccountModel>) {
@@ -132,6 +182,7 @@ export class FirebaseService {
     await accRef.update(payload.id, payload);
   }
 
+  // ? ==================================================================
   // ! CATEGORY
   // ? ADD
   async addCategory(payload: Partial<CategoryModel>) {
@@ -159,6 +210,7 @@ export class FirebaseService {
     await accRef.update(payload.id, payload);
   }
 
+  // ? ==================================================================
   // ! SUBCATEGORY
   // ? ADD
   async addSubCategory(payload: Partial<SubCategoryModel>) {
@@ -186,8 +238,13 @@ export class FirebaseService {
     await accRef.update(payload.id, payload);
   }
 
+  nextQueryDaily(query: Query) {
+    // console.log('TC: nextQuery -> query', query);
+    this.dateQueryDaily$.next(query);
+  }
+
   nextQuery(query: Query) {
-    console.log('TC: nextQuery -> query', query);
+    // console.log('TC: nextQuery -> query', query);
     this.dateQuery$.next(query);
   }
 }

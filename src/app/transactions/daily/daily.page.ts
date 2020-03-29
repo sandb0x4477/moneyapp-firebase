@@ -1,6 +1,6 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, AfterViewInit } from '@angular/core';
 import { SubSink } from 'subsink';
-import { subMonths, addMonths } from 'date-fns';
+import { subMonths, addMonths, format } from 'date-fns';
 
 import { FirebaseService } from '../../_services/firebase.service';
 
@@ -8,40 +8,79 @@ import { TransactionModel } from '../../_models/transaction.model';
 import { UtilityService } from '../../_services/utility.service';
 import { ModalController } from '@ionic/angular';
 import { EditTransPage } from '../../_modals/edit-trans/edit-trans.page';
+import { TotalModel } from '../../_models/total.model';
 
 @Component({
   selector: 'app-daily',
   templateUrl: './daily.page.html',
   styleUrls: ['./daily.page.scss'],
 })
-export class DailyPage implements OnInit, OnDestroy {
+export class DailyPage implements OnInit, OnDestroy, AfterViewInit {
+  ngAfterViewInit(): void {
+  // console.log('TC: DailyPage -> ngAfterViewInit');
+  }
+  ngOnDestroy(): void {
+    this.subs.unsubscribe();
+  }
   subs = new SubSink();
 
   dailyData: any[] = [];
+  totals: TotalModel[] = [];
 
   totalIncome = 0;
   totalExpense = 0;
 
-  selectedDate = subMonths(new Date(), 10);
+  // selectedDate = subMonths(new Date(), 10);
+  selectedDate = new Date();
   transactions: TransactionModel[];
 
   constructor(
     public fbService: FirebaseService,
     private utilitySrv: UtilityService,
     private modalCtrl: ModalController,
-  ) {}
+  ) {
+  }
+
+  // ngOnInit() {}
 
   ngOnInit() {
+    this.setUpListeners();
     this.nextQuery();
-    this.subs.sink = this.fbService.transactions$.subscribe(res => {
-      console.log('TC: DailyPage -> ngOnInit -> res', res);
+  }
+
+  ionViewWillEnter() {
+    this.nextQuery();
+  }
+
+  ionViewWillUnload() {
+  // console.log('TC: DailyPage -> ionViewWillUnload -> ionViewWillUnload');
+
+  }
+
+  ionViewDidLeave() {
+    // console.log('TC: DailyPage -> ionViewDidLeave -> ionViewDidLeave');
+    this.subs.unsubscribe();
+  }
+
+  setUpListeners() {
+    this.subs.sink = this.fbService.transactionsDaily$.subscribe(res => {
+      // console.log('TC: DailyPage -> ngOnInit -> res', res);
       this.transactions = res;
       this.processData(res);
+    });
+    this.subs.sink = this.fbService.totals$.subscribe(res => {
+      // console.log('TC: DailyPage -> TOTALS -> ', res);
+      this.totals = res;
+    });
+    this.subs.sink = this.utilitySrv.dateStore$.subscribe(res => {
+      const { selectedDate } = res;
+      this.selectedDate = selectedDate;
+      this.nextQuery();
     });
   }
 
   onTransClick(trans: TransactionModel) {
-    console.log('TC: DailyPage -> onTransClick -> trans', trans);
+    // console.log('TC: DailyPage -> onTransClick -> trans', trans);
   }
 
   processData(transactions: TransactionModel[]) {
@@ -54,7 +93,7 @@ export class DailyPage implements OnInit, OnDestroy {
     this.totalIncome = 0;
     this.totalExpense = 0;
     shortDatesOfMonth.forEach(el => {
-      // console.log('TC: DailyPage -> populateCards -> el', el);
+      // // console.log('TC: DailyPage -> populateCards -> el', el);
       const result = transactions.filter(t => t.date === el);
       if (result.length > 0) {
         const data = this.utilitySrv.getDayHeader(result);
@@ -84,7 +123,14 @@ export class DailyPage implements OnInit, OnDestroy {
     await modal.present();
 
     const { data } = await modal.onWillDismiss();
-    console.log('TC: DailyPage -> presentModal -> data', data);
+    // console.log('TC: DailyPage -> presentModal -> data', data);
+    if (data) {
+      this.fbService.addTransaction(data.trans);
+    }
+  }
+
+  get totalForCurrentMonth() {
+    return this.totals.find(t => t.month === format(this.selectedDate, 'yyyy-MM'));
   }
 
   nextDate() {
@@ -98,10 +144,6 @@ export class DailyPage implements OnInit, OnDestroy {
   }
 
   nextQuery() {
-    this.fbService.nextQuery(this.utilitySrv.getQuery(this.selectedDate));
-  }
-
-  ngOnDestroy() {
-    this.subs.unsubscribe();
+    this.fbService.nextQueryDaily(this.utilitySrv.getQuery(this.selectedDate));
   }
 }

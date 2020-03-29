@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { SubSink } from 'subsink';
 import {
   subMonths,
@@ -24,30 +24,37 @@ import { TotalModel } from '../../_models/total.model';
   templateUrl: './calendar.page.html',
   styleUrls: ['./calendar.page.scss'],
 })
-export class CalendarPage implements OnInit, OnDestroy {
+export class CalendarPage implements OnInit {
   subs = new SubSink();
 
   calendarData: any[] = [];
   weekDays = ['Mon', 'Tue', 'Wen', 'Thu', 'Fri', 'Sat', 'Sun'];
 
-  selectedDate = subMonths(new Date(), 6);
+  selectedDate = new Date();
   transactions: TransactionModel[];
   totals: TotalModel[] = [];
 
   constructor(public fbService: FirebaseService, private utilitySrv: UtilityService) {}
 
-  ngOnInit() {
-    this.nextQuery();
+  ngOnInit() {}
+
+  ionViewWillEnter() {
+    // this.nextQuery();
     this.subs.sink = this.fbService.transactions$.subscribe(res => {
-      console.log('TC: CalendarPage -> ngOnInit -> res', res);
+      // console.log('TC: CalendarPage -> ngOnInit -> res', res);
       this.transactions = res;
       this.calendarData = this.getCalendarDays(res);
-      console.log('TC: CalendarPage -> ngOnInit -> this.calendarData', this.calendarData);
+      // // console.log('TC: CalendarPage -> ngOnInit -> this.calendarData', this.calendarData);
     });
     this.subs.sink = this.fbService.totals$.subscribe(res => {
-      console.log('TC: CalendarPage -> ngOnInit -> res', res);
+      // console.log('TC: CalendarPage -> TOTALS -> ', res);
       this.totals = res;
     });
+    this.subs.sink = this.utilitySrv.dateStore$.subscribe(res => {
+      const { selectedDate } = res;
+      this.selectedDate = selectedDate;
+      this.nextQuery();
+    })
   }
 
   getCalendarDays(trans: TransactionModel[]) {
@@ -78,7 +85,7 @@ export class CalendarPage implements OnInit, OnDestroy {
         cell = { ...cell, expense };
       }
 
-      if (incomeForDay .length > 0) {
+      if (incomeForDay.length > 0) {
         let income = 0;
         incomeForDay.forEach(el => {
           income += el.amount;
@@ -103,14 +110,14 @@ export class CalendarPage implements OnInit, OnDestroy {
   }
 
   get totalForCurrentMonth() {
-    return this.totals.find(t => t.month === format(this.selectedDate, 'yyyy-MM')) || null;
+    return this.totals.find(t => t.month === format(this.selectedDate, 'yyyy-MM'));
   }
 
   nextQuery() {
     this.fbService.nextQuery(this.utilitySrv.getCalendarQuery(this.selectedDate));
   }
 
-  ngOnDestroy() {
+  ionViewWillLeave() {
     this.subs.unsubscribe();
   }
 }

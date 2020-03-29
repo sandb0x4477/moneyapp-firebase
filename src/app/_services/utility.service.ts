@@ -6,9 +6,6 @@ import {
   endOfYear,
   startOfMonth,
   endOfMonth,
-  addYears,
-  addMonths,
-  subYears,
   subMonths,
   eachDayOfInterval,
   addDays,
@@ -16,6 +13,8 @@ import {
 } from 'date-fns';
 
 import { TransactionModel } from '../_models/transaction.model';
+import { BehaviorSubject } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 const { Storage } = Plugins;
 
@@ -23,8 +22,33 @@ const { Storage } = Plugins;
   providedIn: 'root',
 })
 export class UtilityService {
+  initialState = {
+    selectedDate: new Date(),
+    selectedYear: new Date(),
+  };
+
+  private dateStore = new BehaviorSubject<{selectedDate: Date, selectedYear: Date}>(this.initialState);
+  public readonly dateStore$ = this.dateStore.asObservable();
+
   queryFormat = 'yyyy-MM-dd';
+
   constructor() {}
+
+  get selectedDate$() {
+    return this.dateStore$.pipe(map(s => s.selectedDate));
+  }
+
+  get selectedYear$() {
+    return this.dateStore$.pipe(map(s => s.selectedYear));
+  }
+
+  getState() {
+    return this.dateStore.getValue();
+  }
+
+  setState(next: any) {
+    this.dateStore.next(next);
+  }
 
   getQuery(selectedDate: Date, dateInYears: boolean = false, catlastEight: boolean = false) {
     let query: any = {};
@@ -38,12 +62,12 @@ export class UtilityService {
       query.start = format(startOfMonth(selectedDate), this.queryFormat);
       query.end = format(endOfMonth(selectedDate), this.queryFormat);
     }
-    console.log('TC: UtilityService -> getQuery -> query', query);
+    // console.log('TC: UtilityService -> getQuery -> query', query);
     return query;
   }
 
   getCalendarQuery(selectedDate: Date) {
-    const firstDay = startOfWeek(startOfMonth(selectedDate), {weekStartsOn: 1});
+    const firstDay = startOfWeek(startOfMonth(selectedDate), { weekStartsOn: 1 });
     const query = {
       start: format(firstDay, this.queryFormat),
       end: format(addDays(firstDay, 41), this.queryFormat),

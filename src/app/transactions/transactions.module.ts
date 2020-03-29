@@ -7,13 +7,15 @@ import { IonicModule } from '@ionic/angular';
 import { TransactionsPageRoutingModule } from './transactions-routing.module';
 
 import { TransactionsPage } from './transactions.page';
+import { CalMonthSelModule } from '../_popovers/cal-month-sel/cal-month-sel.module';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    TransactionsPageRoutingModule
+    TransactionsPageRoutingModule,
+    CalMonthSelModule
   ],
   declarations: [TransactionsPage]
 })

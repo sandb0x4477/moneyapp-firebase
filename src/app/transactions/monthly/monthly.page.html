@@ -1,5 +1,4 @@
 <ion-content>
-  <ion-button (click)="changeYear()">Change Year</ion-button>
   <!-- ! TOTALS -->
   <div class="inc-exp-total">
     <div class="inc-exp-total-column">
@@ -31,7 +30,7 @@
   </div>
     <ng-container *ngFor="let item of totals">
     <div class="container">
-      <div class="month">{{item.month}}</div>
+      <div class="month">{{item.month}}&nbsp;&nbsp;&nbsp;&nbsp;{{item.monthName}}</div>
       <div class="income">{{item.income | number: '1.2-2'}}</div>
       <div class="expense">{{item.expense | number: '1.2-2'}}</div>
     </div>

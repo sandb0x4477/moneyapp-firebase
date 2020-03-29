@@ -1,11 +1,34 @@
 <ion-header>
-  <ion-toolbar>
-    <ion-title>transactions</ion-title>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="end">
+      <ion-button (click)="onPrev()">
+        <ion-icon slot="icon-only" name="chevron-back"></ion-icon>
+      </ion-button>
+      <ng-container *ngIf="dateInYears">
+        <ion-button>{{selectedYear | date: 'yyyy' }}</ion-button>
+      </ng-container>
+      <ng-container *ngIf="!dateInYears">
+        <ion-button (click)="presentPopover($event)">{{selectedDate | date: 'yyyy MMM' }}</ion-button>
+      </ng-container>
+      <ion-button (click)="onNext()">
+        <ion-icon slot="icon-only" name="chevron-forward"></ion-icon>
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
+<ion-segment class="segment" (ionChange)="menuChanged($event)" color="secondary" value='daily'>
+  <ion-segment-button value="calendar">
+    <ion-label>Calendar</ion-label>
+  </ion-segment-button>
+  <ion-segment-button value="daily">
+    <ion-label>Daily</ion-label>
+  </ion-segment-button>
+  <ion-segment-button value="monthly">
+    <ion-label>Monthly</ion-label>
+  </ion-segment-button>
+</ion-segment>
+
 <ion-content>
-  <ion-button [routerLink]="['calendar']">Calendar</ion-button>
-<ion-button [routerLink]="['daily']">Daily</ion-button>
-<ion-button [routerLink]="['monthly']">Monthly</ion-button>
+  <ion-router-outlet></ion-router-outlet>
 </ion-content>
