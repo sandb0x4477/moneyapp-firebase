@@ -1,9 +1,11 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import * as Highcharts from 'highcharts';
-import { SubSink } from 'subsink';
 import NoDataToDisplay from 'highcharts/modules/no-data-to-display';
-import { subMonths, addMonths } from 'date-fns';
-import { map } from 'rxjs/operators';
+import { subMonths, addMonths, addYears, subYears } from 'date-fns';
+import { map, tap } from 'rxjs/operators';
+import { Router } from '@angular/router';
+import { Observable, combineLatest } from 'rxjs';
+
 import _round from 'lodash.round';
 import _groupBy from 'lodash.groupby';
 import _map from 'lodash.map';
@@ -14,7 +16,6 @@ import { CHARTCOLORS } from '../_config/chart.colors';
 import { FirebaseService } from '../_services/firebase.service';
 import { UtilityService } from '../_services/utility.service';
 import { TransactionModel } from '../_models/transaction.model';
-import { Router } from '@angular/router';
 
 NoDataToDisplay(Highcharts);
 
@@ -23,50 +24,76 @@ NoDataToDisplay(Highcharts);
   templateUrl: './stats.page.html',
   styleUrls: ['./stats.page.scss'],
 })
-export class StatsPage implements OnInit, OnDestroy {
+export class StatsPage implements OnInit {
   chartColors = CHARTCOLORS;
-  selectedDate = subMonths(new Date(), 0);
-  queryFormat = 'yyyy-MM-dd';
-  subs = new SubSink();
+  statsViewData$: Observable<any>;
+  dateInYears = false;
+  optionValue = 'month';
 
-  statData: StatData[];
+  constructor(public fbService: FirebaseService, public utilitySrv: UtilityService, private router: Router) {}
 
-  constructor(
-    public fbService: FirebaseService,
-    private utilitySrv: UtilityService,
-    private router: Router,
-  ) {}
-
-  ionViewWillEnter() {
+  ngOnInit() {
     this.nextQuery();
-    this.subs.sink = this.fbService.transactions$
-      .pipe(map(trans => trans.filter(t => t.type === 1)))
-      .subscribe(res => {
-        // console.log('TC: StatsPage -> ngOnInit -> res', res);
-        // this.transactions = res;
-        this.processData(res);
-      });
+    this.statsViewData$ =  this.fbService.transactionsStats$.pipe(
+      // tap(res => console.log(res)),
+      map(trans => this.processStatsData(trans)),
+      tap(res => this.renderPieChart(res)),
+    );
     this.resize();
   }
 
-  ionViewWillLeave() {
-    this.subs.unsubscribe();
+  presentPopover() {}
+
+  onSelectChange(event: any) {
+    this.optionValue = event.detail.value;
+    this.dateInYears = event.detail.value === 'year';
+    this.nextQuery();
   }
 
-  ngOnInit() {}
+  onNextMonth() {
+    const state = this.utilitySrv.getState();
+    if (this.dateInYears) {
+      this.utilitySrv.setState({
+        ...state,
+        selectedDateStats: addYears(state.selectedDateStats, 1)
+      });
+    } else {
+      this.utilitySrv.setState({
+        ...state,
+        selectedDateStats: addMonths(state.selectedDateStats, 1)
+      });
+    }
+    this.nextQuery();
+  }
 
-  processData(trans: TransactionModel[]) {
+  onPrevMonth() {
+    const state = this.utilitySrv.getState();
+    if (this.dateInYears) {
+      this.utilitySrv.setState({
+        ...state,
+        selectedDateStats: subYears(state.selectedDateStats, 1)
+      });
+    } else {
+      this.utilitySrv.setState({
+        ...state,
+        selectedDateStats: subMonths(state.selectedDateStats, 1)
+      });
+    }
+    this.nextQuery();
+  }
+
+  processStatsData(trans: TransactionModel[]) {
     const total = _sumBy(trans, 'amount');
     const grouped = _groupBy(trans, 'mainCatId');
     const mapped = _map(grouped, (rest, mainCatId) => ({
       mainCatId,
       sum: _round(_sumBy(rest, 'amount'), 2),
-      percent: _round((_sumBy(rest, 'amount') / total) * 100, 0),
+      percent: _round((_sumBy(rest, 'amount') / total) * 100, 1),
       catName: rest[0].catName,
     }));
 
-    this.statData = _sortBy(mapped, 'sum').reverse();
-    this.renderPieChart(this.statData);
+    const statData = _sortBy(mapped, 'sum').reverse();
+    return statData;
   }
 
   renderPieChart(data: StatData[]) {
@@ -112,7 +139,7 @@ export class StatsPage implements OnInit, OnDestroy {
             format: '{point.name}: {point.percentage:.0f} %',
             style: {
               fontWeight: 'normal',
-              fontSize: '1.1em',
+              fontSize: '1.0em',
               fontFamily: 'RobotoCondensed',
             },
           },
@@ -134,32 +161,29 @@ export class StatsPage implements OnInit, OnDestroy {
     this.router.navigate(['app/stats/detail', item.mainCatId]);
   }
 
-  nextDate() {
-    this.selectedDate = addMonths(this.selectedDate, 1);
-    this.nextQuery();
-  }
+  // nextDate() {
+  //   this.selectedDate = addMonths(this.selectedDate, 1);
+  //   this.nextQuery();
+  // }
 
-  prevoiusDate() {
-    this.selectedDate = subMonths(this.selectedDate, 1);
-    this.nextQuery();
-  }
+  // prevoiusDate() {
+  //   this.selectedDate = subMonths(this.selectedDate, 1);
+  //   this.nextQuery();
+  // }
 
   nextQuery() {
-    this.fbService.nextQuery(this.utilitySrv.getQuery(this.selectedDate));
+    const { selectedDateStats } = this.utilitySrv.getState();
+    this.fbService.nextQueryStats(this.utilitySrv.getQuery(selectedDateStats));
   }
 
   resize() {
-    if (!this.statData) {
-      return;
-    }
-    this.renderPieChart(this.statData);
-    // setTimeout(() => {
-    //   window.dispatchEvent(new Event('resize'));
-    // }, 200);
-  }
-
-  ngOnDestroy() {
-    this.subs.unsubscribe();
+    // if (!this.statData) {
+    //   return;
+    // }
+    // this.renderPieChart(this.statData);
+    setTimeout(() => {
+      window.dispatchEvent(new Event('resize'));
+    }, 200);
   }
 }
 

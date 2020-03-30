@@ -56,7 +56,7 @@
   box-sizing: border-box;
   border-left: 1px solid var(--border-color);
   border-top: 1px solid var(--border-color);
-  min-height: 86px;
+  min-height: 66px;
   cursor: pointer;
 
   &:nth-of-type(7n + 7) {
@@ -85,14 +85,14 @@
 
 .cell-expense {
   justify-self: end;
-  font-size: 0.75em;
-  padding: 0.3em;
+  font-size: 0.72em;
+  padding: 0.2em;
   color: var(--expense-color);
 }
 
 .cell-income {
   justify-self: end;
-  font-size: 0.75em;
-  padding: 0.3em;
+  font-size: 0.72em;
+  padding: 0.2em;
   color: var(--income-color);
 }

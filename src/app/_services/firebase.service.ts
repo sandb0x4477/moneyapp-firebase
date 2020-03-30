@@ -20,9 +20,12 @@ interface Query {
 export class FirebaseService {
   dateQuery$: BehaviorSubject<Query | null>;
   dateQueryDaily$: BehaviorSubject<Query | null>;
+  dateQueryCalendar$: BehaviorSubject<Query | null>;
+  dateQueryStats$: BehaviorSubject<Query | null>;
 
-  transactions$: Observable<TransactionModel[]>;
+  transactionsCalendar$: Observable<TransactionModel[]>;
   transactionsDaily$: Observable<TransactionModel[]>;
+  transactionsStats$: Observable<TransactionModel[]>;
   totals$: Observable<TotalModel[]>;
   accounts$: Observable<AccountModel[]>;
   categories$: Observable<CategoryModel[]>;
@@ -34,6 +37,8 @@ export class FirebaseService {
   constructor(private db: AngularFireDatabase) {
     this.dateQuery$ = new BehaviorSubject(null);
     this.dateQueryDaily$ = new BehaviorSubject(null);
+    this.dateQueryCalendar$ = new BehaviorSubject(null);
+    this.dateQueryStats$ = new BehaviorSubject(null);
 
     // ! CATEGORY ORDERED
     this.categories$ = combineLatest([
@@ -96,9 +101,8 @@ export class FirebaseService {
       // shareReplay(),
     );
 
-
-    // ? TRANSACTIONS
-    this.transactions$ = this.dateQuery$.pipe(
+    // ? TRANSACTIONS CALENDAR
+    this.transactionsCalendar$ = this.dateQueryCalendar$.pipe(
       switchMap(query =>
         query
           ? db
@@ -111,7 +115,26 @@ export class FirebaseService {
               .valueChanges()
           : of([]),
       ),
-      tap(_ => console.log('TRANSACTIONS HIT')),
+      tap(_ => console.log('TRANSACTIONS CALENDAR HIT')),
+      // shareReplay(),
+    );
+
+    // ? TRANSACTIONS STATS
+    this.transactionsStats$ = this.dateQueryStats$.pipe(
+      switchMap(query =>
+        query
+          ? db
+              .list<TransactionModel>('transaction', ref =>
+                ref
+                  .orderByChild('date')
+                  .startAt(query.start)
+                  .endAt(query.end),
+              )
+              .valueChanges()
+          : of([]),
+      ),
+      map(trans => trans.filter(t => t.type === 1)),
+      tap(_ => console.log('TRANSACTIONS STATS HIT')),
       // shareReplay(),
     );
   }
@@ -152,11 +175,83 @@ export class FirebaseService {
       ...trans,
       id: keyRef,
     };
-    newEntry[`totals/${trans.month}`] = {
-      ...total,
-      expense: trans.amount + total.expense,
+
+    if (trans.type === 0) {
+      newEntry[`totals/${trans.month}`] = {
+        ...total,
+        income: trans.amount + total.income,
+      };
+    } else {
+      newEntry[`totals/${trans.month}`] = {
+        ...total,
+        expense: trans.amount + total.expense,
+      };
+    }
+
+    await this.db.database
+      .ref()
+      .update(newEntry)
+      .catch(err => console.log(err));
+  }
+
+  // ? EDIT
+  async updateTransaction(trans: Partial<TransactionModel>) {
+    const totalRef = await this.db.database.ref(`/totals/${trans.month}`).once('value');
+    const transRef = await this.db.database.ref(`/transaction/${trans.id}`).once('value');
+    const transFb = transRef.val();
+    const total = totalRef.val();
+    const newEntry = {};
+    const amountDiff = trans.amount - transFb.amount;
+    // 30 - 20 = 10
+    // 20 - 30 = -10
+
+    newEntry[`transaction/${trans.id}`] = {
+      ...trans,
     };
 
+    if (amountDiff !== 0) {
+      if (trans.type === 0) {
+        newEntry[`totals/${trans.month}`] = {
+          ...total,
+          income: total.income + amountDiff,
+        };
+      } else {
+        newEntry[`totals/${trans.month}`] = {
+          ...total,
+          expense: total.expense + amountDiff,
+        };
+      }
+    }
+    console.log('TC: updateTransaction -> newEntry', newEntry);
+    await this.db.database
+      .ref()
+      .update(newEntry)
+      .catch(err => console.log(err));
+  }
+
+  // ? DELETE
+  async deleteTransaction(trans: Partial<TransactionModel>) {
+    const totalRef = await this.db.database.ref(`/totals/${trans.month}`).once('value');
+    const total = totalRef.val();
+    const newEntry = {};
+    // 30 - 20 = 10
+    // 20 - 30 = -10
+
+    newEntry[`transaction/${trans.id}`] = {};
+
+    if (trans.type === 0) {
+      newEntry[`totals/${trans.month}`] = {
+        ...total,
+        income: total.income - trans.amount,
+      };
+    } else {
+      newEntry[`totals/${trans.month}`] = {
+        ...total,
+        expense: total.expense - trans.amount,
+      };
+    }
+
+    console.log('TC: updateTransaction -> newEntry', newEntry);
     await this.db.database
       .ref()
       .update(newEntry)
@@ -241,6 +336,16 @@ export class FirebaseService {
   nextQueryDaily(query: Query) {
     // console.log('TC: nextQuery -> query', query);
     this.dateQueryDaily$.next(query);
+  }
+
+  nextQueryCalendar(query: Query) {
+    // console.log('TC: nextQuery -> query', query);
+    this.dateQueryCalendar$.next(query);
+  }
+
+  nextQueryStats(query: Query) {
+    // console.log('TC: nextQuery -> query', query);
+    this.dateQueryStats$.next(query);
   }
 
   nextQuery(query: Query) {

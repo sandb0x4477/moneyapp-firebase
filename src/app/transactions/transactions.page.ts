@@ -7,6 +7,7 @@ import { SubSink } from 'subsink';
 
 import { CalMonthSelComponent } from '../_popovers/cal-month-sel/cal-month-sel.component';
 import { UtilityService } from '../_services/utility.service';
+import { FirebaseService } from '../_services/firebase.service';
 
 @Component({
   selector: 'app-transactions',
@@ -24,7 +25,7 @@ export class TransactionsPage implements OnInit, OnDestroy {
   constructor(
     private utilitySrv: UtilityService,
     private popoverCtrl: PopoverController,
-    private router: Router,
+    public fbService: FirebaseService,
     private navCtrl: NavController,
   ) {}
 
@@ -70,13 +71,24 @@ export class TransactionsPage implements OnInit, OnDestroy {
       this.utilitySrv.setState({
         ...state,
         selectedDate: data,
+        selectedDateCalendar: data
       });
+
+      const { selectedDate, selectedDateCalendar } = this.utilitySrv.getState();
+
+      if (this.menuValue === 'daily') {
+        this.fbService.nextQueryDaily(this.utilitySrv.getQuery(selectedDate));
+      }
+
+      if (this.menuValue === 'calendar') {
+        this.fbService.nextQueryCalendar(this.utilitySrv.getCalendarQuery(selectedDateCalendar));
+      }
     }
   }
 
   onNext() {
     const state = this.utilitySrv.getState();
-    console.log('TC: TransactionsPage -> onNext -> state', state);
+    // console.log('TC: TransactionsPage -> onNext -> state', state);
     if (this.dateInYears) {
       this.utilitySrv.setState({
         ...state,
@@ -86,13 +98,22 @@ export class TransactionsPage implements OnInit, OnDestroy {
       this.utilitySrv.setState({
         ...state,
         selectedDate: addMonths(this.selectedDate, 1),
+        selectedDateCalendar: addMonths(this.selectedDate, 1),
       });
+      if (this.menuValue === 'daily') {
+        const { selectedDate } = this.utilitySrv.getState();
+        this.fbService.nextQueryDaily(this.utilitySrv.getQuery(selectedDate));
+      }
+      if (this.menuValue === 'calendar') {
+        const { selectedDateCalendar } = this.utilitySrv.getState();
+        this.fbService.nextQueryCalendar(this.utilitySrv.getCalendarQuery(selectedDateCalendar));
+      }
     }
   }
 
   onPrev() {
     const state = this.utilitySrv.getState();
-    console.log('TC: TransactionsPage -> onNext -> state', state);
+    // console.log('TC: TransactionsPage -> onNext -> state', state);
     if (this.dateInYears) {
       this.utilitySrv.setState({
         ...state,
@@ -102,7 +123,16 @@ export class TransactionsPage implements OnInit, OnDestroy {
       this.utilitySrv.setState({
         ...state,
         selectedDate: subMonths(this.selectedDate, 1),
+        selectedDateCalendar: subMonths(this.selectedDate, 1),
       });
+      if (this.menuValue === 'daily') {
+        const { selectedDate } = this.utilitySrv.getState();
+        this.fbService.nextQueryDaily(this.utilitySrv.getQuery(selectedDate));
+      }
+      if (this.menuValue === 'calendar') {
+        const { selectedDateCalendar } = this.utilitySrv.getState();
+        this.fbService.nextQueryCalendar(this.utilitySrv.getCalendarQuery(selectedDateCalendar));
+      }
     }
   }
 }

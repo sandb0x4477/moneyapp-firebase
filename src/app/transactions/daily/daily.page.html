@@ -1,6 +1,4 @@
 <ion-content>
-  <ion-button (click)="prevoiusDate()">Prev date</ion-button>
-  <ion-button (click)="nextDate()">Next date</ion-button>
   <ion-fab vertical="bottom" horizontal="end" slot="fixed">
     <ion-fab-button color="secondary" (click)="addNewInModal()">
       <ion-icon name="add"></ion-icon>
@@ -8,38 +6,40 @@
   </ion-fab>
 
   <!-- ! TOTALS -->
-  <div class="inc-exp-total">
-    <div class="inc-exp-total-column">
-      <div class="inc-exp-total-column-text">
-        Income
+  <ng-container *ngIf="dailyViewData$ | async as data">
+    <div class="inc-exp-total">
+      <div class="inc-exp-total-column">
+        <div class="inc-exp-total-column-text">
+          Income
+        </div>
+        <div class="inc-exp-total-column-number" style="color: #2e6de4;">
+          {{data.totalForMonth?.income | number: '1.2-2' }}
+        </div>
       </div>
-      <div class="inc-exp-total-column-number" style="color: #2e6de4;">
-        {{totalForCurrentMonth?.income | number: '1.2-2' }}
+
+      <div class="inc-exp-total-column">
+        <div class="inc-exp-total-column-text">
+          Expenses
+        </div>
+        <div class="inc-exp-total-column-number" style="color: #c92626;">
+          {{data.totalForMonth?.expense | number: '1.2-2' }}
+        </div>
+      </div>
+
+      <div class="inc-exp-total-column">
+        <div class="inc-exp-total-column-text">
+          Total
+        </div>
+        <div class="inc-exp-total-column-number">
+          {{data.totalForMonth?.income - data.totalForMonth?.expense | number: '1.2-2' }}
+        </div>
       </div>
     </div>
 
-    <div class="inc-exp-total-column">
-      <div class="inc-exp-total-column-text">
-        Expenses
-      </div>
-      <div class="inc-exp-total-column-number" style="color: #c92626;">
-        {{totalForCurrentMonth?.expense | number: '1.2-2' }}
-      </div>
-    </div>
-
-    <div class="inc-exp-total-column">
-      <div class="inc-exp-total-column-text">
-        Total
-      </div>
-      <div class="inc-exp-total-column-number">
-        {{totalForCurrentMonth?.expense - totalForCurrentMonth?.income | number: '1.2-2' }}
-      </div>
-    </div>
-  </div>
-
-  <!-- ! CARD -->
-  <ng-container *ngFor="let day of dailyData">
-    <app-daily-trans [day]="day" (command)="onTransClick($event)"></app-daily-trans>
+    <!-- ! CARD -->
+    <ng-container *ngFor="let day of data.dailyData">
+      <app-daily-trans [day]="day" (command)="onTransClick($event)"></app-daily-trans>
+    </ng-container>
+    <div class="dummy"></div>
   </ng-container>
-  <div class="dummy"></div>
 </ion-content>

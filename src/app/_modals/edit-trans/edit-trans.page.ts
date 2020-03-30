@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, OnDestroy } from '@angular/core';
-import { ModalController, PopoverController } from '@ionic/angular';
+import { ModalController, PopoverController, AlertController } from '@ionic/angular';
 import { format } from 'date-fns';
 import { SubSink } from 'subsink';
 import { map } from 'rxjs/operators';
@@ -42,6 +42,7 @@ export class EditTransPage implements OnInit, OnDestroy {
     public fbService: FirebaseService,
     private modalCtrl: ModalController,
     private popoverCtrl: PopoverController,
+    public alertCtlr: AlertController,
   ) {}
 
   ngOnInit() {
@@ -67,18 +68,59 @@ export class EditTransPage implements OnInit, OnDestroy {
   onSubmit() {
     this.trans.date = format(this.selectedDate, 'yyyy-MM-dd');
     this.trans.time = format(new Date(), 'HH:mm:ss');
-    this.trans.deleted = false;
     this.trans.month = format(this.selectedDate, 'yyyy-MM');
-    // TODO change
-    this.trans.type = 1;
+    this.trans.type = this.type;
     const data: any = {
+      flag: this.flag,
       repeatType: this.selectedRepeatMode,
       trans: this.trans,
     };
     this.modalCtrl.dismiss(data);
   }
 
-  onDelete() {}
+  segmentChanged(event: any) {
+    this.type = +event.detail.value;
+    this.trans.accId = null;
+    this.trans.accName = null;
+    this.trans.mainCatId = null;
+    this.trans.catName = null;
+    this.trans.subCatId = null;
+    this.trans.subCatName = null;
+    this.trans.catFull = null;
+  }
+
+  async presentAlertConfirm() {
+    const alert = await this.alertCtlr.create({
+      header: 'Are you sure?',
+      message: 'Transaction will be <strong>permanently</strong> deleted!!!',
+      buttons: [
+        {
+          text: 'Cancel',
+          role: 'cancel',
+          cssClass: 'primary',
+          handler: blah => {
+            console.log('Confirm Cancel: blah');
+          },
+        },
+        {
+          text: 'Delete',
+          handler: () => {
+            this.delete();
+          },
+        },
+      ],
+    });
+
+    await alert.present();
+  }
+
+  delete() {
+    const data = {
+      flag: 'delete',
+      trans: this.trans,
+    };
+    this.modalCtrl.dismiss(data);
+  }
 
   // ! DATE PICKER
   async openDatePicker(event: any) {
@@ -126,7 +168,7 @@ export class EditTransPage implements OnInit, OnDestroy {
         expenseCats: this.expenseCats,
         incomeCats: this.incomeCats,
         subcategories: this.subcategories,
-        type: 1
+        type: this.type,
       },
       cssClass: 'categories-popup',
     });
@@ -135,12 +177,11 @@ export class EditTransPage implements OnInit, OnDestroy {
     const { data } = await popover.onWillDismiss();
 
     if (data) {
-      console.log('TC: AddEditTransactionComponent -> openCategoriesPopup -> data', data);
-      this.trans.mainCatId = data.mainCategory.id,
-      this.trans.catName = data.mainCategory.catName,
-      this.trans.subCatId = data.subCategory?.id || null,
-      this.trans.subCatName = data.subCategory?.subCatName || null,
-      this.trans.catFull = this.categoryFull
+      (this.trans.mainCatId = data.mainCategory.id),
+        (this.trans.catName = data.mainCategory.catName),
+        (this.trans.subCatId = data.subCategory?.id || null),
+        (this.trans.subCatName = data.subCategory?.subCatName || null),
+        (this.trans.catFull = this.categoryFull);
     }
   }
 
@@ -160,24 +201,22 @@ export class EditTransPage implements OnInit, OnDestroy {
     const { data } = await popover.onWillDismiss();
     if (data) {
       console.log('TC: AddEditTransactionComponent -> openCalculator -> data', data);
-      this.trans.amount = data
+      this.trans.amount = data;
     }
   }
-
 
   get categoryFull() {
     if (this.trans.catName && this.trans.subCatName) {
-      return `${this.trans.catName}/${this.trans.subCatName}`
+      return `${this.trans.catName}/${this.trans.subCatName}`;
     } else if (this.trans.catName) {
-      return this.trans.catName
+      return this.trans.catName;
     } else {
       return '';
     }
-
   }
 
   isDisabled() {
-    const {accName, amount, catName } = this.trans;
+    const { accName, amount, catName } = this.trans;
     if (accName && amount && catName) {
       return false;
     }

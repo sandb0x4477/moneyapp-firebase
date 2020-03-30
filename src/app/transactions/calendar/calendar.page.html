@@ -1,58 +1,58 @@
 <ion-content>
-
-  <div class="inc-exp-total">
-    <div class="inc-exp-total-column">
-      <div class="inc-exp-total-column-text">
-        Income
+  <ng-container *ngIf="calendarViewData$ | async as data">
+    <div class="inc-exp-total">
+      <div class="inc-exp-total-column">
+        <div class="inc-exp-total-column-text">
+          Income
+        </div>
+        <div class="inc-exp-total-column-number" style="color: #2e6de4;">
+          {{data.totalForMonth?.income | number: '1.2-2' }}
+        </div>
       </div>
-      <div class="inc-exp-total-column-number" style="color: #2e6de4;">
-        {{totalForCurrentMonth?.income | number: '1.2-2' }}
+
+      <div class="inc-exp-total-column">
+        <div class="inc-exp-total-column-text">
+          Expenses
+        </div>
+        <div class="inc-exp-total-column-number" style="color: #c92626;">
+          {{data.totalForMonth?.expense | number: '1.2-2' }}
+        </div>
+      </div>
+
+      <div class="inc-exp-total-column">
+        <div class="inc-exp-total-column-text">
+          Total
+        </div>
+        <div class="inc-exp-total-column-number">
+          {{data.totalForMonth?.income - data.totalForMonth?.expense | number: '1.2-2' }}
+        </div>
       </div>
     </div>
 
-    <div class="inc-exp-total-column">
-      <div class="inc-exp-total-column-text">
-        Expenses
-      </div>
-      <div class="inc-exp-total-column-number" style="color: #c92626;">
-        {{totalForCurrentMonth?.expense | number: '1.2-2' }}
-      </div>
+    <div class="days-of-week">
+      <ng-container *ngFor="let weekDay of weekDays">
+        <div class="week-day">{{ weekDay }}</div>
+      </ng-container>
     </div>
 
-    <div class="inc-exp-total-column">
-      <div class="inc-exp-total-column-text">
-        Total
-      </div>
-      <div class="inc-exp-total-column-number">
-        {{totalForCurrentMonth?.income - totalForCurrentMonth?.expense | number: '1.2-2' }}
-      </div>
-    </div>
-    </div>
-
-  <div class="days-of-week">
-    <ng-container *ngFor="let weekDay of weekDays">
-      <div class="week-day">{{ weekDay }}</div>
-    </ng-container>
-  </div>
-
-  <div class="calendar">
-    <div
-      class="cell"
-      *ngFor="let cell of calendarData"
-      [class.cellDisabled]="!cell.isSameMonth"
-      [class.selected]="cell.isToday"
-    >
-      <div class="cell-number" [class.isSunday]="cell.isSunday">
-        {{ cell.cellDay }}
-      </div>
-      <div class="cell-expense">
-        {{ cell.expense | number: '1.2-2' }}
-      </div>
-      <div class="cell-income">
-        {{ cell.income | number: '1.2-2' }}
+    <div class="calendar">
+      <div
+        class="cell"
+        *ngFor="let cell of data.calendarCells"
+        [class.cellDisabled]="!cell.isSameMonth"
+        [class.selected]="cell.isToday"
+      >
+        <div class="cell-number" [class.isSunday]="cell.isSunday">
+          {{ cell.cellDay }}
+        </div>
+        <div class="cell-expense">
+          {{ cell.expense | number: '1.2-2' }}
+        </div>
+        <div class="cell-income">
+          {{ cell.income | number: '1.2-2' }}
+        </div>
       </div>
     </div>
-  </div>
-
+  </ng-container>
 </ion-content>
 <!--       (click)="onCellClick(cell)" -->

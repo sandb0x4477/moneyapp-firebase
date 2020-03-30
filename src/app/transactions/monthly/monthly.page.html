@@ -1,38 +1,43 @@
 <ion-content>
   <!-- ! TOTALS -->
-  <div class="inc-exp-total">
-    <div class="inc-exp-total-column">
-      <div class="inc-exp-total-column-text">
-        Income
+  <ng-container *ngIf="monthlyViewData$ | async as data">
+
+    <div class="inc-exp-total">
+      <div class="inc-exp-total-column">
+        <div class="inc-exp-total-column-text">
+          Income
+        </div>
+        <div class="inc-exp-total-column-number" style="color: #2e6de4;">
+          {{data.income | number: '1.2-2' }}
+        </div>
       </div>
-      <div class="inc-exp-total-column-number" style="color: #2e6de4;">
-        {{totalIncome | number: '1.2-2' }}
+
+      <div class="inc-exp-total-column">
+        <div class="inc-exp-total-column-text">
+          Expenses
+        </div>
+        <div class="inc-exp-total-column-number" style="color: #c92626;">
+          {{data.expense | number: '1.2-2' }}
+        </div>
+      </div>
+
+      <div class="inc-exp-total-column">
+        <div class="inc-exp-total-column-text">
+          Total
+        </div>
+        <div class="inc-exp-total-column-number">
+          {{data.income -data.expense | number: '1.2-2' }}
+        </div>
       </div>
     </div>
 
-    <div class="inc-exp-total-column">
-      <div class="inc-exp-total-column-text">
-        Expenses
+    <ng-container *ngFor="let item of data.yearlyData">
+      <div class="container">
+        <div class="month">{{item.month}}&nbsp;&nbsp;&nbsp;&nbsp;{{item.monthName}}</div>
+        <div class="income">{{item.income | number: '1.2-2'}}</div>
+        <div class="expense">{{item.expense | number: '1.2-2'}}</div>
       </div>
-      <div class="inc-exp-total-column-number" style="color: #c92626;">
-        {{totalExpense | number: '1.2-2' }}
-      </div>
-    </div>
-
-    <div class="inc-exp-total-column">
-      <div class="inc-exp-total-column-text">
-        Total
-      </div>
-      <div class="inc-exp-total-column-number">
-        {{totalIncome - totalExpense | number: '1.2-2' }}
-      </div>
-    </div>
-  </div>
-    <ng-container *ngFor="let item of totals">
-    <div class="container">
-      <div class="month">{{item.month}}&nbsp;&nbsp;&nbsp;&nbsp;{{item.monthName}}</div>
-      <div class="income">{{item.income | number: '1.2-2'}}</div>
-      <div class="expense">{{item.expense | number: '1.2-2'}}</div>
-    </div>
     </ng-container>
+
+  </ng-container>
 </ion-content>

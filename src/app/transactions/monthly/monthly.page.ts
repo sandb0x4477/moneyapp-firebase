@@ -1,7 +1,7 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { SubSink } from 'subsink';
+import { Component, OnInit } from '@angular/core';
 import { format } from 'date-fns';
 import { combineLatest, Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 import { FirebaseService } from '../../_services/firebase.service';
 import { TotalModel } from '../../_models/total.model';
@@ -12,39 +12,32 @@ import { UtilityService } from '../../_services/utility.service';
   templateUrl: './monthly.page.html',
   styleUrls: ['./monthly.page.scss'],
 })
-export class MonthlyPage implements OnInit, OnDestroy {
-  subs = new SubSink();
+export class MonthlyPage implements OnInit {
 
-  totals: TotalModel[];
-
-  totalIncome: number;
-  totalExpense: number;
-
-  latest: Observable<any>;
+  monthlyViewData$: Observable<any>;
 
   constructor(public fbService: FirebaseService, private utilitySrv: UtilityService) {}
 
   ngOnInit() {
-    this.latest = combineLatest([this.utilitySrv.selectedYear$, this.fbService.totals$]);
-    this.subs.sink = this.latest.subscribe(([selectedYear, totals]) => {
-      // console.log('TC: MonthlyPage -> ngOnInit -> totals', totals);
-      // console.log('TC: MonthlyPage -> ngOnInit -> selectedYear', selectedYear);
-      this.calculateTotals(totals, selectedYear);
-    });
+    this.monthlyViewData$ = combineLatest([this.utilitySrv.selectedYear$, this.fbService.totals$]).pipe(
+      map(([selectedYear, totals]) => this.processData(selectedYear, totals))
+    );
   }
 
-  ngOnDestroy() {
-    console.log('TC: MonthlyPage -> ngOnDestroy');
-    this.subs.unsubscribe();
-  }
+  processData(selectedYear: Date, totals: TotalModel[] ) {
+    const yearlyData = totals.filter(r => r.month.substring(0, 4) === format(selectedYear, 'yyyy')).reverse();
+    let income = 0;
+    let expense = 0;
+    yearlyData.forEach(el => {
+      income += el.income;
+      expense += el.expense;
+    })
 
-  calculateTotals(totals: TotalModel[], selectedYear: Date) {
-    this.totals = totals.filter(r => r.month.substring(0, 4) === format(selectedYear, 'yyyy')).reverse();
-    this.totalIncome = 0;
-    this.totalExpense = 0;
-    this.totals.forEach(item => {
-      this.totalIncome += item.income;
-      this.totalExpense += item.expense;
-    });
+    const payload = {
+      yearlyData,
+      income,
+      expense
+    }
+    return payload;
   }
 }

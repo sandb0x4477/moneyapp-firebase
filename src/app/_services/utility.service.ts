@@ -24,18 +24,33 @@ const { Storage } = Plugins;
 export class UtilityService {
   initialState = {
     selectedDate: new Date(),
+    selectedDateCalendar: new Date(),
+    selectedDateStats: new Date(),
     selectedYear: new Date(),
   };
 
-  private dateStore = new BehaviorSubject<{selectedDate: Date, selectedYear: Date}>(this.initialState);
+  private dateStore = new BehaviorSubject<{
+    selectedDate: Date;
+    selectedDateCalendar: Date;
+    selectedDateStats: Date;
+    selectedYear: Date;
+  }>(this.initialState);
   public readonly dateStore$ = this.dateStore.asObservable();
 
   queryFormat = 'yyyy-MM-dd';
 
   constructor() {}
 
+  get selectedDateCalendar$() {
+    return this.dateStore$.pipe(map(s => s.selectedDateCalendar));
+  }
+
   get selectedDate$() {
     return this.dateStore$.pipe(map(s => s.selectedDate));
+  }
+
+  get selectedDateStats$() {
+    return this.dateStore$.pipe(map(s => s.selectedDateStats));
   }
 
   get selectedYear$() {

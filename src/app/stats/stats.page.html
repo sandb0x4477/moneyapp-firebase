@@ -1,21 +1,44 @@
-<ion-content>
-  <ion-button (click)="prevoiusDate()">Prev date</ion-button>
-  <ion-button (click)="nextDate()">Next date</ion-button>
-  <br />
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-select interface="popover" slot="start" [value]="optionValue" (ionChange)="onSelectChange($event)">
+      <ion-select-option value="month">Monthly</ion-select-option>
+      <ion-select-option value="year">Yearly</ion-select-option>
+    </ion-select>
+    <ion-buttons slot="end">
+      <ion-button (click)="onPrevMonth()">
+        <ion-icon slot="icon-only" name="chevron-back"></ion-icon>
+      </ion-button>
 
+      <ng-container *ngIf="utilitySrv.selectedDateStats$ | async as date">
+        <ng-container *ngIf="dateInYears">
+          <ion-button>{{date | date: 'yyyy' }}</ion-button>
+        </ng-container>
+        <ng-container *ngIf="!dateInYears">
+          <ion-button (click)="presentPopover($event)">{{date | date: 'yyyy MMM' }}</ion-button>
+        </ng-container>
+        <ion-button (click)="onNextMonth()">
+          <ion-icon slot="icon-only" name="chevron-forward"></ion-icon>
+        </ion-button>
+      </ng-container>
+
+    </ion-buttons>
+  </ion-toolbar> </ion-header
+><ion-content>
   <ion-card>
     <ion-card-content>
       <div id="container" (window:resize)="resize($event)"></div>
     </ion-card-content>
   </ion-card>
 
-  <ion-list>
-    <ng-container *ngFor="let item of statData; let i = index">
-      <ion-item detail lines="full" button (click)="goToStatsDetail(item)">
-        <ion-badge slot="start" [style.backgroundColor]="chartColors[i]">{{item.percent}} %</ion-badge>
-        <ion-label class="ion-text-left">{{item.catName}}</ion-label>
-        <ion-label class="ion-text-right label-total">{{item.sum | number: '1.2-2'}}</ion-label>
-      </ion-item>
-    </ng-container>
-  </ion-list>
+  <ng-container *ngIf="statsViewData$ | async as data">
+    <ion-list>
+      <ng-container *ngFor="let item of data; let i = index">
+        <ion-item detail lines="full" button (click)="goToStatsDetail(item)">
+          <ion-badge slot="start" [style.backgroundColor]="chartColors[i]">{{item.percent | number: '1.0-0'}} %</ion-badge>
+          <ion-label class="ion-text-left">{{item.catName}}</ion-label>
+          <ion-label class="ion-text-right label-total">{{item.sum | number: '1.2-2'}}</ion-label>
+        </ion-item>
+      </ng-container>
+    </ion-list>
+  </ng-container>
 </ion-content>

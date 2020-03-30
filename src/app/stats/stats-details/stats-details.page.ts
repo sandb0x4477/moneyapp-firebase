@@ -29,16 +29,16 @@ export class StatsDetailsPage implements OnInit {
   }
 
   async ngOnInit() {
-    this.mainCategory = await this.utilitySrv.dataTransferGet();
-    // this.nextQuery();
+    // this.mainCategory = await this.utilitySrv.dataTransferGet();
+    // // this.nextQuery();
 
-    this.subs.sink = this.fbService.transactions$
-      .pipe(map(trans => trans.filter(t => t.type === 1 && t.mainCatId === this.mainCategory.mainCatId)))
-      .subscribe(res => {
-        console.log('TC: StatsPage -> ngOnInit -> res', res);
-        // this.transactions = res;
-        // this.processData(res);
-      });
+    // this.subs.sink = this.fbService.transactions$
+    //   .pipe(map(trans => trans.filter(t => t.type === 1 && t.mainCatId === this.mainCategory.mainCatId)))
+    //   .subscribe(res => {
+    //     console.log('TC: StatsPage -> ngOnInit -> res', res);
+    //     // this.transactions = res;
+    //     // this.processData(res);
+    //   });
   }
 
   nextDate() {

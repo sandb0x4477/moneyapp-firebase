@@ -12,6 +12,20 @@
 </ion-header>
 
 <ion-content>
+  <ion-segment
+    class="segment"
+    (ionChange)="segmentChanged($event)"
+    [value]="type"
+    *ngIf="flag === 'add'"
+  >
+    <ion-segment-button value="0">
+      <ion-label>Income</ion-label>
+    </ion-segment-button>
+    <ion-segment-button value="1">
+      <ion-label color="danger">Expense</ion-label>
+    </ion-segment-button>
+  </ion-segment>
+
   <!-- ? DATE PICKER -->
   <ion-item lines="full" (click)="openDatePicker($event)" button>
     <ion-label>Date</ion-label>
@@ -63,5 +77,5 @@
   >
   <ion-button color="medium" expand="block" (click)="dismissModal()">Cancel</ion-button>
   <br />
-  <ion-button color="danger" expand="block" (click)="onDelete()" *ngIf="flag === 'edit'">Delete</ion-button>
+  <ion-button color="danger" expand="block" (click)="presentAlertConfirm()" *ngIf="flag === 'edit'">Delete</ion-button>
 </ion-content>

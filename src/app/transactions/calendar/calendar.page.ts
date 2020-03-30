@@ -1,8 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { SubSink } from 'subsink';
 import {
-  subMonths,
-  addMonths,
   format,
   startOfWeek,
   startOfMonth,
@@ -18,6 +16,8 @@ import { TransactionModel } from '../../_models/transaction.model';
 import { UtilityService } from '../../_services/utility.service';
 import { FirebaseService } from '../../_services/firebase.service';
 import { TotalModel } from '../../_models/total.model';
+import { map } from 'rxjs/operators';
+import { Observable, combineLatest } from 'rxjs';
 
 @Component({
   selector: 'app-calendar',
@@ -25,41 +25,28 @@ import { TotalModel } from '../../_models/total.model';
   styleUrls: ['./calendar.page.scss'],
 })
 export class CalendarPage implements OnInit {
-  subs = new SubSink();
+  calendarViewData$: Observable<any>;
 
-  calendarData: any[] = [];
   weekDays = ['Mon', 'Tue', 'Wen', 'Thu', 'Fri', 'Sat', 'Sun'];
-
-  selectedDate = new Date();
-  transactions: TransactionModel[];
-  totals: TotalModel[] = [];
 
   constructor(public fbService: FirebaseService, private utilitySrv: UtilityService) {}
 
-  ngOnInit() {}
-
-  ionViewWillEnter() {
-    // this.nextQuery();
-    this.subs.sink = this.fbService.transactions$.subscribe(res => {
-      // console.log('TC: CalendarPage -> ngOnInit -> res', res);
-      this.transactions = res;
-      this.calendarData = this.getCalendarDays(res);
-      // // console.log('TC: CalendarPage -> ngOnInit -> this.calendarData', this.calendarData);
-    });
-    this.subs.sink = this.fbService.totals$.subscribe(res => {
-      // console.log('TC: CalendarPage -> TOTALS -> ', res);
-      this.totals = res;
-    });
-    this.subs.sink = this.utilitySrv.dateStore$.subscribe(res => {
-      const { selectedDate } = res;
-      this.selectedDate = selectedDate;
-      this.nextQuery();
-    })
+  ngOnInit() {
+    this.nextQuery();
+    this.calendarViewData$ = combineLatest([
+      this.fbService.transactionsCalendar$,
+      this.fbService.totals$,
+      this.utilitySrv.selectedDateCalendar$,
+    ]).pipe(
+      map(([trans, totals, date]) => this.processCalendarData(trans, totals, date)),
+    );
   }
 
-  getCalendarDays(trans: TransactionModel[]) {
+  processCalendarData(trans: TransactionModel[], totals: TotalModel[], date: Date) {
     let calendarCells = [];
-    const firstDay = startOfWeek(startOfMonth(this.selectedDate), { weekStartsOn: 1 });
+    const firstDay = startOfWeek(startOfMonth(date), { weekStartsOn: 1 });
+    const totalForMonth = totals.find(m => m.month === format(date, 'yyyy-MM'));
+
     for (let i = 0; i < 42; i++) {
       let cell: any = {
         cellDay: getDate(addDays(firstDay, i)),
@@ -69,7 +56,7 @@ export class CalendarPage implements OnInit {
         isSameWeek: isSameWeek(new Date(), addDays(firstDay, i), {
           weekStartsOn: 1,
         }),
-        isSameMonth: isSameMonth(this.selectedDate, addDays(firstDay, i)),
+        isSameMonth: isSameMonth(date, addDays(firstDay, i)),
         expense: null,
         income: null,
       };
@@ -92,32 +79,14 @@ export class CalendarPage implements OnInit {
         });
         cell = { ...cell, income };
       }
-
       calendarCells.push(cell);
     }
 
-    return calendarCells;
-  }
-
-  nextDate() {
-    this.selectedDate = addMonths(this.selectedDate, 1);
-    this.nextQuery();
-  }
-
-  prevoiusDate() {
-    this.selectedDate = subMonths(this.selectedDate, 1);
-    this.nextQuery();
-  }
-
-  get totalForCurrentMonth() {
-    return this.totals.find(t => t.month === format(this.selectedDate, 'yyyy-MM'));
+    return { totalForMonth, calendarCells };
   }
 
   nextQuery() {
-    this.fbService.nextQuery(this.utilitySrv.getCalendarQuery(this.selectedDate));
-  }
-
-  ionViewWillLeave() {
-    this.subs.unsubscribe();
+    const { selectedDateCalendar } = this.utilitySrv.getState();
+    this.fbService.nextQueryCalendar(this.utilitySrv.getCalendarQuery(selectedDateCalendar));
   }
 }
