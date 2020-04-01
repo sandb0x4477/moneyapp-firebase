@@ -1,0 +1,40 @@
+<ion-content>
+  <ion-card>
+    <div class="card-header">
+      <div>{{ cell.cellDay }}</div>
+      <div [class.isSunday]="cell.isSunday">{{ cell.cellDate | date: 'EEEE' }}</div>
+      <div>{{ cell.cellDate | date: 'yyyy.MM' }}</div>
+      <div>{{ cell.income | number: '1.2-2' }}</div>
+      <div>{{ cell.expense | number: '1.2-2' }}</div>
+    </div>
+
+    <ng-container *ngFor="let trans of transactions">
+      <div class="card-transaction" (click)="onTransClick(trans)">
+        <div>{{ trans.catFull }}</div>
+        <div>{{ trans.accName }}</div>
+        <div [class.isIncome]="trans.type === 0">{{ trans.amount | number: '1.2-2' }}</div>
+      </div>
+    </ng-container>
+    <ion-button
+      size="small"
+      expand="block"
+      fill="clear"
+      style="margin-top: 16px"
+      (click)="addNewTransaction()"
+      >Add</ion-button
+    >
+  </ion-card>
+</ion-content>
+
+<!-- cellDate: "2019-03-05"
+​
+cellDay: 5​
+​
+income: 7000
+​
+hellko: true
+​
+isSameWeek: false
+​
+​isSameWeejk
+isToday: false -->

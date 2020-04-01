@@ -5,12 +5,12 @@ export interface TransactionModel {
   catFull: string;
   catName: string;
   date: string;
-  deleted: boolean;
+  deleted?: boolean;
   id?: string;
   mainCatId: string;
   subCatId?: string;
   subCatName?: string;
-  time: string;
+  time?: string;
   type: number;
   memo?: string;
   month: string;

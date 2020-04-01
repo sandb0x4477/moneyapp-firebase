@@ -24,7 +24,7 @@
 
 .container {
   display: grid;
-  grid-template-columns: 3fr 1fr 1fr;
+  grid-template-columns: 3fr 1fr 1fr 1fr;
   grid-gap: 12px;
   padding: 8px;
   font-size: 0.95em;
@@ -44,5 +44,11 @@
 .expense {
   padding-right: 6px;
   color: var(--expense-color);
+  justify-self: end;
+}
+
+.diffrence {
+  padding-right: 6px;
+  // color: var(--expense-color);
   justify-self: end;
 }

@@ -1,0 +1,43 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+    <ion-title>Repeat Transactions</ion-title>
+    <ion-buttons slot="primary">
+      <ion-button (click)="addNewInModal()">
+        <ion-icon slot="icon-only" name="add"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ng-container *ngIf="repeatTrans$ | async as data">
+    <ion-list>
+      <ng-container *ngFor="let item of data">
+        <div class="wrapper" tappable (click)="onEdit(item)">
+          <div>
+            <p>
+              {{item.nextDate}}
+            </p>
+            <p>
+              {{getRepeatType(item.repeatType)}}
+            </p>
+          </div>
+          <div>
+            <p>
+              {{item.memo }}
+            </p>
+            <p>
+              {{item.accName }} - {{item.catFull}}
+            </p>
+          </div>
+          <div>
+            {{item.amount | number: '1.2-2' }}
+          </div>
+        </div>
+      </ng-container>
+    </ion-list>
+  </ng-container>
+</ion-content>

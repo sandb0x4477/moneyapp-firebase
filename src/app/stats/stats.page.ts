@@ -34,15 +34,15 @@ export class StatsPage implements OnInit {
 
   ngOnInit() {
     this.nextQuery();
-    this.statsViewData$ =  this.fbService.transactionsStats$.pipe(
+    this.statsViewData$ = this.fbService.transactionsStats$.pipe(
       // tap(res => console.log(res)),
       map(trans => this.processStatsData(trans)),
       tap(res => this.renderPieChart(res)),
     );
-    this.resize();
+    // this.resize();
   }
 
-  presentPopover() {}
+  presentPopover(event: any) {}
 
   onSelectChange(event: any) {
     this.optionValue = event.detail.value;
@@ -55,12 +55,12 @@ export class StatsPage implements OnInit {
     if (this.dateInYears) {
       this.utilitySrv.setState({
         ...state,
-        selectedDateStats: addYears(state.selectedDateStats, 1)
+        selectedDateStats: addYears(state.selectedDateStats, 1),
       });
     } else {
       this.utilitySrv.setState({
         ...state,
-        selectedDateStats: addMonths(state.selectedDateStats, 1)
+        selectedDateStats: addMonths(state.selectedDateStats, 1),
       });
     }
     this.nextQuery();
@@ -71,12 +71,12 @@ export class StatsPage implements OnInit {
     if (this.dateInYears) {
       this.utilitySrv.setState({
         ...state,
-        selectedDateStats: subYears(state.selectedDateStats, 1)
+        selectedDateStats: subYears(state.selectedDateStats, 1),
       });
     } else {
       this.utilitySrv.setState({
         ...state,
-        selectedDateStats: subMonths(state.selectedDateStats, 1)
+        selectedDateStats: subMonths(state.selectedDateStats, 1),
       });
     }
     this.nextQuery();
@@ -134,6 +134,9 @@ export class StatsPage implements OnInit {
           cursor: 'pointer',
           colors: this.chartColors,
           dataLabels: {
+            softConnector: true,
+            defer: true,
+            connectorShape: 'fixedOffset',
             distance: 20,
             enabled: true,
             format: '{point.name}: {point.percentage:.0f} %',
@@ -141,6 +144,11 @@ export class StatsPage implements OnInit {
               fontWeight: 'normal',
               fontSize: '1.0em',
               fontFamily: 'RobotoCondensed',
+            },
+            filter: {
+              property: 'percentage',
+              operator: '>',
+              value: 2,
             },
           },
         },
@@ -176,7 +184,7 @@ export class StatsPage implements OnInit {
     this.fbService.nextQueryStats(this.utilitySrv.getQuery(selectedDateStats));
   }
 
-  resize() {
+  resize(event: any) {
     // if (!this.statData) {
     //   return;
     // }

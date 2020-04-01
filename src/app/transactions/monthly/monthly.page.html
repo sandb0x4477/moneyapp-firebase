@@ -7,7 +7,7 @@
         <div class="inc-exp-total-column-text">
           Income
         </div>
-        <div class="inc-exp-total-column-number" style="color: #2e6de4;">
+        <div class="inc-exp-total-column-number" style="color: #016fa1;">
           {{data.income | number: '1.2-2' }}
         </div>
       </div>
@@ -16,7 +16,7 @@
         <div class="inc-exp-total-column-text">
           Expenses
         </div>
-        <div class="inc-exp-total-column-number" style="color: #c92626;">
+        <div class="inc-exp-total-column-number" style="color: #c21700;">
           {{data.expense | number: '1.2-2' }}
         </div>
       </div>
@@ -26,7 +26,7 @@
           Total
         </div>
         <div class="inc-exp-total-column-number">
-          {{data.income -data.expense | number: '1.2-2' }}
+          {{data.income - data.expense | number: '1.2-2' }}
         </div>
       </div>
     </div>
@@ -36,6 +36,7 @@
         <div class="month">{{item.month}}&nbsp;&nbsp;&nbsp;&nbsp;{{item.monthName}}</div>
         <div class="income">{{item.income | number: '1.2-2'}}</div>
         <div class="expense">{{item.expense | number: '1.2-2'}}</div>
+        <div class="diffrence">{{item.income - item.expense | number: '1.2-2'}}</div>
       </div>
     </ng-container>
 

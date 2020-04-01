@@ -20,7 +20,7 @@
       <ion-list>
         <ng-container *ngFor="let item of incomeCats; let i = index">
           <ion-item
-          [detail]="itemHasSubcategories(item.id, 'incomeCats')"
+          [detail]="itemHasSubcategories(item.id)"
           lines="full"
           button
           (click)="onMainCategoryClick(item, i)"

@@ -1,0 +1,12 @@
+{
+  "rules": {
+    ".read": true,
+    ".write": true,
+    "transaction": {
+      ".indexOn": ["date"]
+    },
+    "totals": {
+      ".indexOn": ["month"]
+    }
+  }
+}

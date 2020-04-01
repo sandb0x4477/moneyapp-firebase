@@ -1,13 +1,15 @@
 import { Injectable } from '@angular/core';
 import { AngularFireDatabase } from '@angular/fire/database';
 import { Observable, BehaviorSubject, of, combineLatest } from 'rxjs';
-import { switchMap, tap, map, shareReplay } from 'rxjs/operators';
+import { switchMap, tap, map, shareReplay, distinctUntilChanged } from 'rxjs/operators';
+import _isEqual from 'lodash.isequal';
 
 import { TotalModel } from '../_models/total.model';
 import { TransactionModel } from '../_models/transaction.model';
 import { AccountModel } from '../_models/account.model';
 import { CategoryModel } from '../_models/category.model';
 import { SubCategoryModel } from '../_models/subcategory.model';
+import { RepeatModel } from '../_models/repeat.model';
 
 interface Query {
   start: string;
@@ -30,6 +32,7 @@ export class FirebaseService {
   accounts$: Observable<AccountModel[]>;
   categories$: Observable<CategoryModel[]>;
   subcategories$: Observable<SubCategoryModel[]>;
+  repeat$: Observable<RepeatModel[]>;
 
   catorder: string[];
   subcatorder: string[];
@@ -49,8 +52,9 @@ export class FirebaseService {
         this.catorder = catorder;
       }),
       map(([categories, catorder]) => this.sortCategories(categories, catorder)),
-      tap(_ => console.log('CATEGORY HIT')),
+      distinctUntilChanged(_isEqual),
       shareReplay(),
+      tap(_ => console.log('CATEGORY HIT')),
     );
 
     this.subcategories$ = combineLatest([
@@ -61,8 +65,9 @@ export class FirebaseService {
         this.subcatorder = subcatorder;
       }),
       map(([subcategories, subcatorder]) => this.sortSubCategories(subcategories, subcatorder)),
-      tap(_ => console.log('SUBCATEGORY HIT')),
+      distinctUntilChanged(_isEqual),
       shareReplay(),
+      tap(_ => console.log('SUBCATEGORY HIT')),
     );
 
     // ? ACCOUNTS
@@ -71,6 +76,7 @@ export class FirebaseService {
       .valueChanges()
       .pipe(
         tap(_ => console.log('ACCOUNTS HIT')),
+        distinctUntilChanged(_isEqual),
         shareReplay(),
       );
 
@@ -79,11 +85,12 @@ export class FirebaseService {
       .list<TotalModel>('totals', ref => ref.orderByKey())
       .valueChanges()
       .pipe(
-        tap(_ => console.log('TOTALS HIT')),
+        distinctUntilChanged(_isEqual),
         shareReplay(),
+        tap(_ => console.log('TOTALS HIT')),
       );
 
-    // ? TRANSACTIONS
+    // ? TRANSACTIONS DAILY
     this.transactionsDaily$ = this.dateQueryDaily$.pipe(
       switchMap(query =>
         query
@@ -95,9 +102,13 @@ export class FirebaseService {
                   .endAt(query.end),
               )
               .valueChanges()
+              .pipe(
+                distinctUntilChanged(_isEqual),
+                shareReplay(),
+                tap(_ => console.log('TRANSACTIONS DAILY HIT')),
+              )
           : of([]),
       ),
-      tap(_ => console.log('TRANSACTIONS DAILY HIT')),
       // shareReplay(),
     );
 
@@ -113,10 +124,13 @@ export class FirebaseService {
                   .endAt(query.end),
               )
               .valueChanges()
+              .pipe(
+                distinctUntilChanged(_isEqual),
+                shareReplay(),
+                tap(_ => console.log('TRANSACTIONS CALENDAR HIT')),
+              )
           : of([]),
       ),
-      tap(_ => console.log('TRANSACTIONS CALENDAR HIT')),
-      // shareReplay(),
     );
 
     // ? TRANSACTIONS STATS
@@ -134,10 +148,23 @@ export class FirebaseService {
           : of([]),
       ),
       map(trans => trans.filter(t => t.type === 1)),
+      distinctUntilChanged(_isEqual),
+      shareReplay(),
       tap(_ => console.log('TRANSACTIONS STATS HIT')),
       // shareReplay(),
     );
+
+    // ? REPEAT
+    this.repeat$ = db
+      .list<RepeatModel>('repeat', ref => ref.orderByChild('nextDate'))
+      .valueChanges()
+      .pipe(
+        distinctUntilChanged(_isEqual),
+        shareReplay(),
+        tap(_ => console.log('REPEAT HIT')),
+      );
   }
+  // ! END OF CONSTRUCTOR ==============================================================
 
   sortCategories(categories: CategoryModel[], catorder: string[]) {
     const tempArr = [];
@@ -352,4 +379,8 @@ export class FirebaseService {
     // console.log('TC: nextQuery -> query', query);
     this.dateQuery$.next(query);
   }
+
+  // naiveObjectComparison(objOne: any, objTwo: any): boolean {
+  //   return JSON.stringify(objOne) === JSON.stringify(objTwo);
+  // }
 }

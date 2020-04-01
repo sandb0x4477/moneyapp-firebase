@@ -1,0 +1,36 @@
+.wrapper {
+  display: grid;
+  grid-template-columns: 0.9fr 1.7fr 0.5fr;
+  align-items: center;
+  border-bottom: 1px solid var(--border-color);
+  padding: 4px 12px;
+  font-size: 0.9em;
+  cursor: pointer;
+
+  &:hover {
+    background-color: #dadada;
+  }
+
+  & div {
+    & p {
+      margin: 1px 0;
+
+      &:nth-child(2) {
+        font-size: 0.8em;
+      }
+    }
+  }
+
+  :nth-child(1) {
+    text-align: left;
+  }
+
+  :nth-child(2) {
+    text-align: left;
+  }
+
+  :nth-child(3) {
+    color: var(--expense-color);
+    text-align: right;
+  }
+}

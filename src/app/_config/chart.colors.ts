@@ -1,7 +1,7 @@
 export const CHARTCOLORS = [
   '#7cb5ec',
-  '#cc3600',
-  '#0cb837',
+  '#bf91c1',
+  '#56b76e',
   '#f7a35c',
   '#8085e9',
   '#f15c80',

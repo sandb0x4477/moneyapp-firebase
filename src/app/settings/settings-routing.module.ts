@@ -15,6 +15,10 @@ const routes: Routes = [
   {
     path: 'category',
     loadChildren: () => import('./category/category.module').then( m => m.CategoryPageModule)
+  },
+  {
+    path: 'repeat',
+    loadChildren: () => import('./repeat/repeat.module').then( m => m.RepeatPageModule)
   }
 ];
 

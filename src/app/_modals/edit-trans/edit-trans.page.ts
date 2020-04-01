@@ -15,6 +15,7 @@ import { AccountModel } from '../../_models/account.model';
 import { CategoryModel } from '../../_models/category.model';
 import { SubCategoryModel } from '../../_models/subcategory.model';
 import { CalculatorPopupComponent } from '../../_popovers/calculator-popup/calculator-popup.component';
+import { RepeatModel } from '../../_models/repeat.model';
 
 @Component({
   selector: 'app-edit-trans',
@@ -28,7 +29,7 @@ export class EditTransPage implements OnInit, OnDestroy {
   @Input() flag: string;
   @Input() type: number;
   @Input() selectedDate: Date = new Date();
-  @Input() trans: Partial<TransactionModel>;
+  @Input() trans: Partial<TransactionModel> | Partial<RepeatModel>;
 
   accounts: AccountModel[];
   expenseCats: CategoryModel[];

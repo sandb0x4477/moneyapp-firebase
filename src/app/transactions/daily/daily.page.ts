@@ -25,6 +25,7 @@ export class DailyPage implements OnInit {
   ) {}
 
   ngOnInit() {
+    console.log('TC: DailyPage -> ngOnInit -> ');
     this.nextQuery();
     this.dailyViewData$ = combineLatest([
       this.fbService.transactionsDaily$,

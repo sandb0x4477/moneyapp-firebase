@@ -1,0 +1,67 @@
+
+// !Header
+.card-header {
+  display: grid;
+  grid-template-columns: 0.7fr 1.3fr 1fr 1fr 1fr;
+  align-items: center;
+  border-bottom: 1px solid var(--border-color);
+  padding: 2px 12px;
+
+  :nth-child(1) {
+    color: #000000;
+    text-align: left;
+    font-size: 2.3em;
+    // text-decoration: underline;
+
+    &.isSunday {
+      color: var(--expense-color);
+    }
+  }
+
+  :nth-child(2) {
+    text-align: left;
+
+    &.isSunday {
+      color: var(--expense-color);
+    }
+  }
+
+  :nth-child(3) {
+    font-size: 0.8em;
+    text-align: left;
+  }
+
+  :nth-child(4) {
+    color: var(--income-color);
+    text-align: right;
+  }
+
+  :nth-child(5) {
+    color: var(--expense-color);
+    text-align: right;
+  }
+}
+
+//  ! Transaction
+.card-transaction {
+  display: grid;
+  grid-template-columns: 2fr 2fr 1fr;
+  align-items: center;
+  border-bottom: 1px solid var(--border-color);
+  padding: 6px 12px;
+  cursor: pointer;
+  font-size: 0.9em;
+
+  &:hover {
+    background-color: #dadada;
+  }
+
+  :nth-child(3) {
+    color: var(--expense-color);
+    text-align: right;
+
+    &.isIncome {
+      color: var(--income-color);
+    }
+  }
+}

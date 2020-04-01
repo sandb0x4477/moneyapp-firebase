@@ -4,21 +4,19 @@ import { FormsModule } from '@angular/forms';
 
 import { IonicModule } from '@ionic/angular';
 
-import { CalendarPageRoutingModule } from './calendar-routing.module';
+import { RepeatPageRoutingModule } from './repeat-routing.module';
 
-import { CalendarPage } from './calendar.page';
+import { RepeatPage } from './repeat.page';
 import { EditTransPageModule } from '../../_modals/edit-trans/edit-trans.module';
-import { TransListModule } from '../../_popovers/trans-list/trans-list.module';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    CalendarPageRoutingModule,
-    EditTransPageModule,
-    TransListModule
+    RepeatPageRoutingModule,
+    EditTransPageModule
   ],
-  declarations: [CalendarPage]
+  declarations: [RepeatPage]
 })
-export class CalendarPageModule {}
+export class RepeatPageModule {}

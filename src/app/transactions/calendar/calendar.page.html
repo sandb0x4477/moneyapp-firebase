@@ -1,4 +1,9 @@
 <ion-content>
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button color="secondary" (click)="addNewInModal()">
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
   <ng-container *ngIf="calendarViewData$ | async as data">
     <div class="inc-exp-total">
       <div class="inc-exp-total-column">
@@ -41,6 +46,7 @@
         *ngFor="let cell of data.calendarCells"
         [class.cellDisabled]="!cell.isSameMonth"
         [class.selected]="cell.isToday"
+        (click)="onCalendarCell(cell)"
       >
         <div class="cell-number" [class.isSunday]="cell.isSunday">
           {{ cell.cellDay }}
