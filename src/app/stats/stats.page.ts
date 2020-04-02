@@ -93,6 +93,8 @@ export class StatsPage implements OnInit {
     }));
 
     const statData = _sortBy(mapped, 'sum').reverse();
+
+    // console.log('TC: StatsPage -> processStatsData -> ', JSON.stringify(statData));
     return statData;
   }
 
@@ -134,15 +136,15 @@ export class StatsPage implements OnInit {
           cursor: 'pointer',
           colors: this.chartColors,
           dataLabels: {
-            softConnector: true,
+            softConnector: false,
             defer: true,
             connectorShape: 'fixedOffset',
-            distance: 20,
+            distance: 14,
             enabled: true,
             format: '{point.name}: {point.percentage:.0f} %',
             style: {
               fontWeight: 'normal',
-              fontSize: '1.0em',
+              fontSize: '0.9em',
               fontFamily: 'RobotoCondensed',
             },
             filter: {

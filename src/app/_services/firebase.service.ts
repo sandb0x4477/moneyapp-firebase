@@ -151,7 +151,6 @@ export class FirebaseService {
       distinctUntilChanged(_isEqual),
       shareReplay(),
       tap(_ => console.log('TRANSACTIONS STATS HIT')),
-      // shareReplay(),
     );
 
     // ? REPEAT
@@ -308,7 +307,7 @@ export class FirebaseService {
   // ! CATEGORY
   // ? ADD
   async addCategory(payload: Partial<CategoryModel>) {
-    let orderTemp = [...this.catorder];
+    const orderTemp = [...this.catorder];
     const keyRef = this.db.createPushId();
     orderTemp.push(keyRef);
 
@@ -336,7 +335,7 @@ export class FirebaseService {
   // ! SUBCATEGORY
   // ? ADD
   async addSubCategory(payload: Partial<SubCategoryModel>) {
-    let orderTemp = [...this.subcatorder];
+    const orderTemp = [...this.subcatorder];
     const keyRef = this.db.createPushId();
     orderTemp.push(keyRef);
 

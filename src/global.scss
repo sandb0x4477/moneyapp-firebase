@@ -30,6 +30,16 @@
   font-family: RobotoCondensed;
   src: url(assets/fonts/RobotoCondensed-Regular.ttf) format('truetype');
 }
+/*
+@font-face {
+  font-family: RobotoCondensed;
+  src: url(assets/fonts/FiraSans-Regular.ttf) format('truetype');
+} */
+
+// :host {
+//   color: rgb(73, 73, 73);
+// }
+
 
 .calculator-modal {
   --height: 60%;

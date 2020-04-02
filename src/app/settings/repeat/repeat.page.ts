@@ -5,7 +5,6 @@ import { FirebaseService } from '../../_services/firebase.service';
 import { RepeatModel } from '../../_models/repeat.model';
 import { REPEAT_TYPES } from '../../_config/repeat.types';
 import { ModalController } from '@ionic/angular';
-import { TransactionModel } from '../../_models/transaction.model';
 import { EditTransPage } from '../../_modals/edit-trans/edit-trans.page';
 
 @Component({
@@ -17,14 +16,15 @@ export class RepeatPage implements OnInit {
   repeatTrans$: Observable<RepeatModel[]>;
   repeatTypes = REPEAT_TYPES;
 
-  constructor(private fbService: FirebaseService, private modalCtrl: ModalController) {}
+  constructor(private fbService: FirebaseService, private modalCtrl: ModalController) {
+  }
 
   ngOnInit() {
     this.repeatTrans$ = this.fbService.repeat$;
   }
 
   addNewInModal() {
-    let trans: RepeatModel = {} as RepeatModel;
+    const trans: RepeatModel = {} as RepeatModel;
     const componentProps = {
       title: 'New Transaction',
       flag: 'repeat',
@@ -35,7 +35,7 @@ export class RepeatPage implements OnInit {
   }
 
   onEdit(trans: RepeatModel) {
-  console.log('TC: RepeatPage -> onEdit -> trans', trans);
+    console.log('TC: RepeatPage -> onEdit -> trans', trans);
 
   }
 
@@ -60,7 +60,6 @@ export class RepeatPage implements OnInit {
   }
 
   getRepeatType(type: number) {
-    const name = this.repeatTypes.find(x => x.value === type).name;
-    return name;
+    return this.repeatTypes.find(x => x.value === type).name;
   }
 }

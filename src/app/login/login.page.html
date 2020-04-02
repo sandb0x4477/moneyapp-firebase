@@ -1,0 +1,30 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title>Log In</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <form [formGroup]="loginForm">
+    <ion-item>
+      <ion-label position="floating">Email*</ion-label>
+      <ion-input type="email" name="email" formControlName="email"></ion-input>
+    </ion-item>
+    <br />
+    <ion-item>
+      <ion-label position="floating">Password*</ion-label>
+      <ion-input type="password" name="password" formControlName="password"></ion-input>
+    </ion-item>
+    <br />
+    <div class="ion-padding">
+      <ion-button expand="block" type="submit" class="ion-no-margin" (click)="onLoginWithEmail()"
+        >Log In</ion-button
+      >
+    </div>
+    <div class="ion-padding" *ngIf="isDebug">
+      <ion-button expand="block" type="submit" class="ion-no-margin" (click)="onLogout()"
+        >Log Out</ion-button
+      >
+    </div>
+  </form>
+</ion-content>

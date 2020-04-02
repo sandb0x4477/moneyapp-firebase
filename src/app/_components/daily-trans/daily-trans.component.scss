@@ -1,7 +1,3 @@
-:host {
-  --border-color: #e9e9e9;
-}
-
 // !Header
 .card-header {
   display: grid;
@@ -9,11 +5,11 @@
   align-items: center;
   border-bottom: 1px solid var(--border-color);
   padding: 2px 12px;
+  color: var(--ion-text-color);
 
   :nth-child(1) {
-    color: #000000;
     text-align: left;
-    font-size: 2.3em;
+    font-size: 2.0em;
     // text-decoration: underline;
 
     &.isSunday {
@@ -49,19 +45,20 @@
 .card-transaction {
   display: grid;
   grid-template-columns: 2fr 2fr 1fr;
-  grid-auto-rows: 28px;
+  grid-auto-rows: 30px;
   align-items: center;
   border-bottom: 1px solid var(--border-color);
-  padding: 6px 12px;
+  padding: 8px 12px;
   cursor: pointer;
-  font-size: 0.95em;
+  font-size: 0.92em;
+  color: var(--ion-text-color);
 
   & div {
     & p {
-      margin: 0;
+      margin: 0.15em 0;
 
       &:nth-child(2) {
-        font-size: 0.9em;
+        font-size: 0.88em;
       }
     }
   }
